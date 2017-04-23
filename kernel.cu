@@ -441,7 +441,7 @@ __global__ void sptMathKernel(int32_t D_can_width, int32_t D_can_height, int16_t
     __shared__ uint8_t I2_desc_shared[320 * 16 * 2];
 
     for(int i = 0; i < 85; i++){
-
+        I0_desc_shared[x + i * BLOCKX ] = *(I1_line_addr + x + i * BLOCKX );
         I1_desc_shared[x + i * BLOCKX ] = *(I1_line_addr + x + i * BLOCKX - 2 * oneLine);
         I1_desc_shared[x + i * BLOCKX + oneLine] = *(I1_line_addr + x + i * BLOCKX + 2 * oneLine);
 
@@ -491,8 +491,10 @@ sum = computeMatchEnergy1_new(I1_desc_shared, I1_desc_shared + oneLine, I2_desc_
 
     sum = 0;
 #pragma unroll
+//    for (int32_t i=0; i<16; i++)
+//      sum += abs((int32_t)(*(I1_block_addr_1+i))-128);
     for (int32_t i=0; i<16; i++)
-      sum += abs((int32_t)(*(I1_block_addr_1+i))-128);
+        sum += abs((int32_t)(*(I0_desc_shared + 16 * u +i))-128);
     if (sum<10)
       d1 = -1;
     if(d1 >= 0){
