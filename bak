@@ -1,0 +1,259 @@
+
+#include "descriptor.h"
+//#include "filter.h"
+//#include <emmintrin.h>
+#include <arm_neon.h>
+#include <fstream>
+
+using namespace std;
+
+
+
+
+typedef union {int8x8x2_t __i; int8x16_t __o;} convert;
+
+void con_8x8_2_8x16(const int8x8_t _8, int8x16_t* _16)
+{
+    char zero[16] = {0};
+    int8x8_t zeroN = vld1_s8((const int8_t*)zero);
+//    char zero[16] = {0};
+//    int8x8_t zeroN = vld1_s8(zero);
+    int8x8x2_t temp;
+    temp = vzip_s8(_8, zeroN);
+    convert con = {temp};
+    *_16 = con.__o;
+
+}
+
+void convolve_cols_3x3( const unsigned char* in, int16_t* out_v, int16_t* out_h, int w, int h ) {
+  using namespace std;
+  const int w_chunk  = w/16;
+
+  const unsigned char* c0 = in;
+  const unsigned char* c1 = in + w_chunk*1*16;
+  const unsigned char* c2 = in + w_chunk*2*16;
+  int16_t* result_h = out_h + w_chunk*2*8;
+  int16_t* result_v = out_v + w_chunk*2*8;
+  const unsigned char* end_input = in + w_chunk*h*16;
+//  char zero[16] = {0};
+//  int16x8_t zeroN = vld1q_s16(zero);
+
+  // int8x16_t i0, i1, i2, //result_v, result_h;
+  int8x8_t tmp_conv;
+  int8x16_t h0,l0, h1,l1, h2,l2;
+  int16x8_t re_h0, re_h1, re_v0, re_v1;
+
+
+  int16_t op1[16], op2[16];
+  int loop = 0;
+
+  for( ; c2 != end_input; c0 += 16, c1+=16, c2+=16, \
+          result_h+=16, result_v+=16 )
+  {
+      // i0 = vld1q_s8(c0);
+      // i1 = vld1q_s8(c1);
+      // i2 = vld1q_s8(c2);
+      tmp_conv = vld1_s8(c0);
+      con_8x8_2_8x16(tmp_conv, &h0);
+      tmp_conv = vld1_s8(c0+8);
+      con_8x8_2_8x16(tmp_conv, &l0);
+      tmp_conv = vld1_s8(c1);
+      con_8x8_2_8x16(tmp_conv, &h1);
+      tmp_conv = vld1_s8(c1+8);
+      con_8x8_2_8x16(tmp_conv, &l1);
+      tmp_conv = vld1_s8(c2);
+      con_8x8_2_8x16(tmp_conv, &h2);
+      tmp_conv = vld1_s8(c2+8);
+      con_8x8_2_8x16(tmp_conv, &l2);
+
+//      vst1q_s8((int8_t*)op1, (h0));
+//      vst1q_s8((int8_t*)op2, (l0));
+//        for(int i = 0; i < 8; i++)
+//        {
+//            printf("%d ", op1[i]);
+//        }
+//        printf("\n");
+//        for(int i = 0; i < 8; i++)
+//        {
+//            printf("%d ", op2[i]);
+//        }
+//        printf("\n");
+
+//        vst1q_s8((int8_t*)op1, (h2));
+//        vst1q_s8((int8_t*)op2, (l2));
+//          for(int i = 0; i < 8; i++)
+//          {
+//              printf("%d ", op1[i]);
+//          }
+//  //        printf("\n");
+//          for(int i = 0; i < 8; i++)
+//          {
+//              printf("%d ", op2[i]);
+//          }
+//          printf("\n");
+
+      //i0,1,2 => h0,l0, 1,2,
+
+      re_h0 = vreinterpretq_s16_s8(h0);
+      re_h1 = vreinterpretq_s16_s8(l0);
+      re_h0 = vsubq_s16(re_h0, vreinterpretq_s16_s8(h2));
+      re_h1 = vsubq_s16(re_h1, vreinterpretq_s16_s8(l2));
+      vst1q_s8((int8_t*)result_h, vreinterpretq_s8_s16(re_h0));
+      vst1q_s8((int8_t*)result_h+16, vreinterpretq_s8_s16(re_h1));
+//      for(int i = 0; i < 16; i++)
+//        printf("%d ", *(((int16_t*)result_h)+i) );
+//      printf("\n");
+
+      re_v0 = vreinterpretq_s16_s8(h0);
+      re_v0 = vaddq_s16(re_v0, vreinterpretq_s16_s8(h1));
+      re_v0 = vaddq_s16(re_v0, vreinterpretq_s16_s8(h1));
+      re_v0 = vaddq_s16(re_v0, vreinterpretq_s16_s8(h2));
+      re_v1 = vreinterpretq_s16_s8(l0);
+      re_v1 = vaddq_s16(re_v1, vreinterpretq_s16_s8(l1));
+      re_v1 = vaddq_s16(re_v1, vreinterpretq_s16_s8(l1));
+      re_v1 = vaddq_s16(re_v1, vreinterpretq_s16_s8(l2));
+      vst1q_s8((int8_t*)result_v, vreinterpretq_s8_s16(re_v0));
+      vst1q_s8((int8_t*)result_v+16, vreinterpretq_s8_s16(re_v1));
+
+
+}
+
+
+}
+
+void sobel3x3( const uint8_t* in, uint8_t* out_v, uint8_t* out_h, int w, int h ) {
+  int16_t* temp_h = (int16_t*)( aligned_alloc( w*h*sizeof( int16_t ), 16 ) );
+  int16_t* temp_v = (int16_t*)( aligned_alloc( w*h*sizeof( int16_t ), 16 ) );
+//  detail::convolve_cols_3x3( in, temp_v, temp_h, w, h );
+  convolve_cols_3x3( in, temp_v, temp_h, w, h );
+
+
+
+  ofstream fout("sobel3x3_v");
+  int i, j;
+  for( i = 0; i < h; i++)
+  {
+      for( j = 0; j < w; j++)
+      {
+          fout << dex << *(temp_v + i*h + j) << " ";
+      }
+      fout<<endl;
+  }
+  fout.close();
+  cout << i << " " << j <<endl;
+
+
+//  convolve_101_row_3x3_16bit(temp_v, out_v, w, h);
+
+
+  printf("here sobel3x3\n");
+  while(1);
+
+//  detail::convolve_101_row_3x3_16bit( temp_v, out_v, w, h );
+//  detail::convolve_121_row_3x3_16bit( temp_h, out_h, w, h );
+  free( temp_h );
+  free( temp_v );
+}
+
+
+
+
+Descriptor::Descriptor(uint8_t* I,int32_t width,int32_t height,int32_t bpl,bool half_resolution) {
+//  I_desc        = (uint8_t*)_mm_malloc(16*width*height*sizeof(uint8_t),16);
+//  uint8_t* I_du = (uint8_t*)_mm_malloc(bpl*height*sizeof(uint8_t),16);
+//  uint8_t* I_dv = (uint8_t*)_mm_malloc(bpl*height*sizeof(uint8_t),16);
+    I_desc        = (uint8_t*)aligned_alloc(16*width*height*sizeof(uint8_t),16);
+    uint8_t* I_du = (uint8_t*)aligned_alloc(bpl*height*sizeof(uint8_t),16);
+    uint8_t* I_dv = (uint8_t*)aligned_alloc(bpl*height*sizeof(uint8_t),16);
+
+    //init zero
+    //for()
+
+
+//    filter::sobel3x3(I,I_du,I_dv,bpl,height);
+    sobel3x3(I,I_du,I_dv,bpl,height);
+  createDescriptor(I_du,I_dv,width,height,bpl,half_resolution);
+//  _mm_free(I_du);
+//  _mm_free(I_dv);
+  free(I_du);
+  free(I_dv);
+}
+
+Descriptor::~Descriptor() {
+//  _mm_free(I_desc);
+    free(I_desc);
+}
+
+void Descriptor::createDescriptor (uint8_t* I_du,uint8_t* I_dv,int32_t width,int32_t height,int32_t bpl,bool half_resolution) {
+
+  uint8_t *I_desc_curr;
+  uint32_t addr_v0,addr_v1,addr_v2,addr_v3,addr_v4;
+
+  // do not compute every second line
+  if (half_resolution) {
+
+    // create filter strip
+    for (int32_t v=4; v<height-3; v+=2) {
+
+      addr_v2 = v*bpl;
+      addr_v0 = addr_v2-2*bpl;
+      addr_v1 = addr_v2-1*bpl;
+      addr_v3 = addr_v2+1*bpl;
+      addr_v4 = addr_v2+2*bpl;
+
+      for (int32_t u=3; u<width-3; u++) {
+        I_desc_curr = I_desc+(v*width+u)*16;
+        *(I_desc_curr++) = *(I_du+addr_v0+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v1+u-2);
+        *(I_desc_curr++) = *(I_du+addr_v1+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v1+u+2);
+        *(I_desc_curr++) = *(I_du+addr_v2+u-1);
+        *(I_desc_curr++) = *(I_du+addr_v2+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v2+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v2+u+1);
+        *(I_desc_curr++) = *(I_du+addr_v3+u-2);
+        *(I_desc_curr++) = *(I_du+addr_v3+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v3+u+2);
+        *(I_desc_curr++) = *(I_du+addr_v4+u+0);
+        *(I_desc_curr++) = *(I_dv+addr_v1+u+0);
+        *(I_desc_curr++) = *(I_dv+addr_v2+u-1);
+        *(I_desc_curr++) = *(I_dv+addr_v2+u+1);
+        *(I_desc_curr++) = *(I_dv+addr_v3+u+0);
+      }
+    }
+
+  // compute full descriptor images
+  } else {
+
+    // create filter strip
+    for (int32_t v=3; v<height-3; v++) {
+
+      addr_v2 = v*bpl;
+      addr_v0 = addr_v2-2*bpl;
+      addr_v1 = addr_v2-1*bpl;
+      addr_v3 = addr_v2+1*bpl;
+      addr_v4 = addr_v2+2*bpl;
+
+      for (int32_t u=3; u<width-3; u++) {
+        I_desc_curr = I_desc+(v*width+u)*16;
+        *(I_desc_curr++) = *(I_du+addr_v0+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v1+u-2);
+        *(I_desc_curr++) = *(I_du+addr_v1+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v1+u+2);
+        *(I_desc_curr++) = *(I_du+addr_v2+u-1);
+        *(I_desc_curr++) = *(I_du+addr_v2+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v2+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v2+u+1);
+        *(I_desc_curr++) = *(I_du+addr_v3+u-2);
+        *(I_desc_curr++) = *(I_du+addr_v3+u+0);
+        *(I_desc_curr++) = *(I_du+addr_v3+u+2);
+        *(I_desc_curr++) = *(I_du+addr_v4+u+0);
+        *(I_desc_curr++) = *(I_dv+addr_v1+u+0);
+        *(I_desc_curr++) = *(I_dv+addr_v2+u-1);
+        *(I_desc_curr++) = *(I_dv+addr_v2+u+1);
+        *(I_desc_curr++) = *(I_dv+addr_v3+u+0);
+      }
+    }
+  }
+
+}

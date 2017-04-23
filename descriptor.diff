@@ -1,0 +1,170 @@
+--- descriptor.cpp	2017-04-20 05:38:39.717612954 +0000
++++ descriptor.cppbak2	2017-04-19 06:32:46.914922076 +0000
+@@ -213,9 +213,19 @@
+       int16_t* temp_v = (int16_t*)( aligned_alloc( 16, w*h*sizeof( int16_t ) ) );
+       clock_t t1,t2;
+ 
+-      convolve_cols_3x3( in, temp_v, temp_h, w, h );    //1.35ms
+-      convolve_101_row_3x3_16bit(temp_v, out_v, w, h);  //0.42ms
+-      convolve_121_row_3x3_16bit( temp_h, out_h, w, h );    //0.57ms
++      t1=clock();
++      convolve_cols_3x3( in, temp_v, temp_h, w, h );
++      t2 = clock();
++      cout << "convolve_cols_3x3 " << (t2-t1)/CLK_TCK << "ms" <<endl;
++
++      t1=clock();
++      convolve_101_row_3x3_16bit(temp_v, out_v, w, h);
++      t2 = clock();
++      cout << "convolve_101_row_3x3_16bit " << (t2-t1)/CLK_TCK << "ms" <<endl;
++        t1=clock();
++      convolve_121_row_3x3_16bit( temp_h, out_h, w, h );
++      t2 = clock();
++      cout << "convolve_121_row_3x3_16bit " << (t2-t1)/CLK_TCK << "ms" <<endl;
+ 
+       free( temp_h );
+       free( temp_v );
+@@ -240,14 +250,14 @@
+ 
+     clock_t t1,t2;
+     sobel3x3(I,I_du,I_dv,bpl,height);
++printf("aaa\n");
+ 
+-//    t1=clock();
+-//    createDescriptor(I_du, I_dv, width, height, bpl, 1);
+-    createDescriptor(I_du, I_dv, width, height, bpl, 1);
++    t1=clock();
++    createDescriptor(I_du, I_dv, width, height, bpl, half_resolution);
+ //    createDesc_gpu((uint8_t*)I_desc_g, I_du_g, I_dv_g);
+ //    createDesc_gpu2((uint8_t**)&I_desc, I_du_g, I_dv_g);
+-//    t2 = clock();
+-//    cout << "createDescriptor " << (t2-t1)/CLK_TCK << "ms" <<endl;
++    t2 = clock();
++    cout << "createDescriptor " << (t2-t1)/CLK_TCK << "ms" <<endl;
+ 
+ //        printf("descriptor\n");
+ //        for(int i = 3; i < 5; i++)
+@@ -268,7 +278,7 @@
+ 
+ Descriptor::~Descriptor() {
+ //    free(I_desc);
+-//    cudaFreeHost_cpuaa(I_desc);
++    cudaFreeHost_cpuaa(I_desc);
+ }
+ 
+ void Descriptor::createDescriptor (uint8_t* I_du,uint8_t* I_dv,int32_t width,int32_t height,int32_t bpl,bool half_resolution) {
+@@ -276,8 +286,11 @@
+   uint8_t *I_desc_curr;
+   uint32_t addr_v0,addr_v1,addr_v2,addr_v3,addr_v4;
+ 
++  // do not compute every second line
++  if (half_resolution) {
++  
+     // create filter strip
+-    for (int32_t v=3; v<height-3; v++) {
++    for (int32_t v=4; v<height-3; v+=2) {
+ 
+       addr_v2 = v*bpl;
+       addr_v0 = addr_v2-2*bpl;
+@@ -299,7 +312,6 @@
+         *(I_desc_curr++) = *(I_du+addr_v3+u+0);
+         *(I_desc_curr++) = *(I_du+addr_v3+u+2);
+         *(I_desc_curr++) = *(I_du+addr_v4+u+0);
+-
+         *(I_desc_curr++) = *(I_dv+addr_v1+u+0);
+         *(I_desc_curr++) = *(I_dv+addr_v2+u-1);
+         *(I_desc_curr++) = *(I_dv+addr_v2+u+1);
+@@ -307,63 +319,38 @@
+       }
+     }
+ 
+-}
+-
+-
+-
+-//void Descriptor::createDescriptor (uint8_t* I_du, uint8_t* I_dv, int32_t width, \
+-//                                   int32_t height, int32_t bpl, bool half_resolution)
+-//{
+-//      uint8_t *I_desc_curr ;
+-//      uint8_t *I_dv_curr, *I_du_curr;
+-
+-
+-//      for(int v = 5; v < height - 5; v++){
+-//          for(int u = 5; u < width - 5; u++){
+-//              I_du_curr = I_du + v * width + u;
+-//              I_dv_curr = I_dv + v * width + u;
+-//              I_desc_curr = I_desc + 16 * (v * width + u);
+-
+-//              *(I_desc_curr + 16 * (2 * width + 0) + 0) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (1 * width + 2) + 1) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (1 * width + 0) + 2) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (1 * width - 2) + 3) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (0 * width + 1) + 4) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (0 * width + 0) + 5) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (0 * width + 0) + 6) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (0 * width - 1) + 7) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (-1 * width + 2) + 8) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (-1 * width + 0) + 9) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (-1 * width - 2) + 10) = *I_du_curr;
+-//              *(I_desc_curr + 16 * (-2 * width + 0) + 11) = *I_du_curr;
+-
+-//              *(I_desc_curr + 16 * (1 * width + 0) + 12) = *I_dv_curr;
+-//              *(I_desc_curr + 16 * (0 * width + 1) + 13) = *I_dv_curr;
+-//              *(I_desc_curr + 16 * (0 * width - 1) + 14) = *I_dv_curr;
+-//              *(I_desc_curr + 16 * (-1 * width + 0) + 15) = *I_dv_curr;
+-//          }
+-//      }
+-//}
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
++  // compute full descriptor images
++  } else {
+ 
++    // create filter strip
++    for (int32_t v=3; v<height-3; v++) {
+ 
++      addr_v2 = v*bpl;
++      addr_v0 = addr_v2-2*bpl;
++      addr_v1 = addr_v2-1*bpl;
++      addr_v3 = addr_v2+1*bpl;
++      addr_v4 = addr_v2+2*bpl;
+ 
++      for (int32_t u=3; u<width-3; u++) {
++        I_desc_curr = I_desc+(v*width+u)*16;
++        *(I_desc_curr++) = *(I_du+addr_v0+u+0);
++        *(I_desc_curr++) = *(I_du+addr_v1+u-2);
++        *(I_desc_curr++) = *(I_du+addr_v1+u+0);
++        *(I_desc_curr++) = *(I_du+addr_v1+u+2);
++        *(I_desc_curr++) = *(I_du+addr_v2+u-1);
++        *(I_desc_curr++) = *(I_du+addr_v2+u+0);
++        *(I_desc_curr++) = *(I_du+addr_v2+u+0);
++        *(I_desc_curr++) = *(I_du+addr_v2+u+1);
++        *(I_desc_curr++) = *(I_du+addr_v3+u-2);
++        *(I_desc_curr++) = *(I_du+addr_v3+u+0);
++        *(I_desc_curr++) = *(I_du+addr_v3+u+2);
++        *(I_desc_curr++) = *(I_du+addr_v4+u+0);
++        *(I_desc_curr++) = *(I_dv+addr_v1+u+0);
++        *(I_desc_curr++) = *(I_dv+addr_v2+u-1);
++        *(I_desc_curr++) = *(I_dv+addr_v2+u+1);
++        *(I_desc_curr++) = *(I_dv+addr_v3+u+0);
++      }
++    }
++  }
+ 
++}

@@ -1,0 +1,378 @@
+
+
+__global__ void Triangle_Match1(triangle1* tri, int32_t* disparity_grid, int32_t *grid_dims,\
+                                uint8_t* I1_desc, uint8_t* I2_desc, int32_t* P, \
+                                int32_t plane_radius, bool right_image, float* D, int32_t width, int32_t height, \
+                                int32_t TRI_SIZE, bool subsampling, int32_t match_texture, int32_t grid_size,\
+                                 int32_t* tp)
+{
+
+
+    float plane_a, plane_b, plane_c, plane_d;
+    int32_t c1, c2, c3;
+        int u_start = blockDim.x * blockIdx.x + threadIdx.x;
+        int v_start = blockDim.y * blockIdx.y + threadIdx.y;
+    int id;
+        __shared__ uint8_t I2_desc_share[320 * 16];
+        __shared__ int32_t P_g[64];
+        __shared__ uint8_t I1_desc_share[320 * 16];
+        __shared__ float plane_a_g[320], plane_b_g[320], plane_c_g[320],plane_d_g[320];
+        __shared__ int32_t disparity_grid_g[65* (WIDTH/GRID_SIZE)*(HEIGH/GRID_SIZE)];
+
+        int u = u_start, v = v_start;
+        for(; u < u_start + 10; u++, v++)
+        {
+            id = tp[2 * u + v * 2 * width + 1];
+
+            // get plane parameters
+            if (!right_image) {    //左图像
+                plane_a_g[u] = tri[id].t1a;
+                plane_b_g[u] = tri[id].t1b;
+                plane_c_g[u] = tri[id].t1c;
+                plane_d_g[u] = tri[id].t2a;
+            }
+            else {               //右图像
+                plane_a_g[u] = tri[id].t2a;
+                plane_b_g[u] = tri[id].t2b;
+                plane_c_g[u] = tri[id].t2c;
+                plane_d_g[u] = tri[id].t1a;
+            }
+        }
+
+        u = u_start*10/grid_size;
+        v = v_start/grid_size;
+        for(int i = 0; i < 65* (WIDTH/grid_size); i++)
+        {
+            disparity_grid_g[i] = disparity_grid[v*65* (WIDTH/grid_size) + i];
+        }
+
+
+
+        u = u_start; v = v_start;
+        for(int i = 0; i < 160; i++ )
+        {
+            I1_desc_share[u*16 + i] = I1_desc[v * 320*16 + u*16 + i];
+            I2_desc_share[u*16 + i] = I2_desc[v * 320 + u*16 + i];
+        }
+
+//        for(int i = 0; i < 160; i++ )
+//        {
+//            I2_desc_share[u*16 + i] = I2_desc[v * 320 + u*16 + i];
+//        }
+
+    __syncthreads();
+
+    for(int j = 0; j < 10 ; j ++)
+    {
+        plane_a = plane_a_g[u];
+        plane_b = plane_b_g[u];
+        plane_c = plane_c_g[u];
+        plane_d = plane_d_g[u];
+//    if ( (u > 2) && (u < width - 2)  && (v < height) ) {
+        if (tp[2 * u + v * 2 * width] != -1)
+        {
+
+
+
+            bool valid = fabs(plane_a)<0.7 && fabs(plane_d)<0.7;
+//            findMatch(x, y, plane_a, plane_b, plane_c, disparity_grid, grid_dims,
+//                I1_desc, I2_desc, P, plane_radius, valid, right_image, D, width,\
+//                      height, subsampling, match_texture, grid_size);
+
+            // get image width and height
+            const int32_t disp_num = grid_dims_g[0] - 1;
+            const int32_t window_size = 2;
+
+            // address of disparity we want to compute
+            uint32_t d_addr;
+            d_addr = getAddressOffsetImage1(u, v, width);
+
+
+
+
+            // compute line start address
+            int32_t  line_offset = 16 * width*max(min(v, height - 3), 2);
+            uint8_t *I1_line_addr, *I2_line_addr;
+//            if (!right_image) {
+                I1_line_addr = I1_desc + line_offset;
+                I2_line_addr = I2_desc + line_offset;
+//            }
+//            else {
+//                I1_line_addr = I2_desc + line_offset;
+//                I2_line_addr = I1_desc + line_offset;
+//            }
+
+            // compute I1 block start address
+//            uint8_t* I1_block_addr = I1_line_addr + 16 * u;
+uint8_t* I1_block_addr = I1_desc_share + 16 * u;
+
+            // does this patch have enough texture?
+            int32_t sum = 0;
+
+        //#pragma unroll
+        //    for (int32_t i = 0; i<16; i++)
+        //        sum += abs((int32_t)(*(I1_block_addr + i)) - 127);
+        //    if (sum<match_texture)
+        //        return;
+
+            // compute disparity, min disparity and max disparity of plane prior
+            int32_t d_plane = (int32_t)(plane_a*(float)u + plane_b*(float)v + plane_c);
+            int32_t d_plane_min = max(d_plane - plane_radius, 0);
+            int32_t d_plane_max = min(d_plane + plane_radius, disp_num - 1);
+
+            // get grid pointer
+            int32_t  grid_x = (int32_t)floor((float)u / (float)grid_size);
+            int32_t  grid_y = (int32_t)floor((float)v / (float)grid_size);
+//            uint32_t grid_addr = getAddressOffsetGrid1(grid_x, grid_y, 0, grid_dims[1], grid_dims[0]);
+//            int32_t  num_grid = *(disparity_grid + grid_addr);
+            uint32_t grid_addr = grid_x * grid_dims_g[0];
+
+            int32_t  num_grid = *(disparity_grid_g + grid_addr);
+
+
+
+            int32_t* d_grid = disparity_grid_g + grid_addr + 1;
+
+            // loop variables
+            int32_t d_curr, u_warp, val;
+            int32_t min_val = 10000;
+            int32_t min_d = -1;
+
+
+            // left image
+
+            if (!right_image) {
+        //#pragma unroll
+                for (int32_t i = 0; i<num_grid; i++) {
+                    d_curr = d_grid[i];
+                    if (d_curr<d_plane_min || d_curr>d_plane_max) {
+                        u_warp = u - d_curr;
+                        if (u_warp<window_size || u_warp >= width - window_size)
+                            continue;
+//                        updatePosteriorMinimum((__m128i*)(I2_line_addr+16*u_warp),d_curr,xmm1,xmm2,val,min_val,min_d);
+//                        updatePosteriorMinimumNew(I1_block_addr, I2_line_addr + 16 * u_warp, d_curr, val, min_val, min_d);
+                          updatePosteriorMinimumNew(I1_block_addr, I2_desc_share + 16 * u_warp, d_curr, val, min_val, min_d);
+
+                    }
+                }
+        //#pragma unroll
+                for (d_curr = d_plane_min; d_curr <= d_plane_max; d_curr++) {
+                    u_warp = u - d_curr;
+                    if (u_warp<window_size || u_warp >= width - window_size)
+                        continue;
+//                    updatePosteriorMinimum((__m128i*)(I2_line_addr+16*u_warp),d_curr,valid?*(P+abs(d_curr-d_plane)):0,xmm1,xmm2,val,min_val,min_d);
+//                    updatePosteriorMinimumNew1(I1_block_addr, I2_line_addr + 16 * u_warp, d_curr, valid ? *(P + abs(d_curr - d_plane)) : 0, val, min_val, min_d);
+                    updatePosteriorMinimumNew1(I1_block_addr, I2_desc_share + 16 * u_warp, d_curr, valid ? *(P + abs(d_curr - d_plane)) : 0, val, min_val, min_d);
+                }
+
+                // right image
+            }
+            else {
+        //#pragma unroll
+                for (int32_t i = 0; i<num_grid; i++) {
+                    d_curr = d_grid[i];
+                    if (d_curr<d_plane_min || d_curr>d_plane_max) {
+                        u_warp = u + d_curr;
+                        if (u_warp<window_size || u_warp >= width - window_size)
+                            continue;
+//                        updatePosteriorMinimum((__m128i*)(I2_line_addr+16*u_warp),d_curr,xmm1,xmm2,val,min_val,min_d);
+//                        updatePosteriorMinimumNew(I1_block_addr, I2_line_addr + 16 * u_warp, d_curr, val, min_val, min_d);
+                        updatePosteriorMinimumNew(I1_block_addr, I2_desc_share + 16 * u_warp, d_curr, val, min_val, min_d);
+                    }
+                }
+        //#pragma unroll
+                for (d_curr = d_plane_min; d_curr <= d_plane_max; d_curr++) {
+                    u_warp = u + d_curr;
+                    if (u_warp<window_size || u_warp >= width - window_size)
+                        continue;
+//                    updatePosteriorMinimum((__m128i*)(I2_line_addr+16*u_warp),d_curr,valid?*(P+abs(d_curr-d_plane)):0,xmm1,xmm2,val,min_val,min_d);
+//                    updatePosteriorMinimumNew1(I1_block_addr, I2_line_addr + 16 * u_warp, d_curr, valid ? *(P + abs(d_curr - d_plane)) : 0, val, min_val, min_d);
+                    updatePosteriorMinimumNew1(I1_block_addr, I2_desc_share + 16 * u_warp, d_curr, valid ? *(P + abs(d_curr - d_plane)) : 0, val, min_val, min_d);
+                }
+            }
+
+
+
+            // set disparity value
+            if (min_d >= 0) *(D + d_addr) = min_d; // MAP value (min neg-Log probability)
+            else          *(D + d_addr) = -1;    // invalid disparity
+
+
+
+
+
+        }
+        u++;
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    if ( (u > 2) && (u < width - 2)  && (v < height) ) {
+        if (tp[2 * u + v * 2 * width] != -1)
+        {
+
+
+
+            bool valid = fabs(plane_a)<0.7 && fabs(plane_d)<0.7;
+//            findMatch(x, y, plane_a, plane_b, plane_c, disparity_grid, grid_dims,
+//                I1_desc, I2_desc, P, plane_radius, valid, right_image, D, width,\
+//                      height, subsampling, match_texture, grid_size);
+
+            // get image width and height
+            const int32_t disp_num = grid_dims_g[0] - 1;
+            const int32_t window_size = 2;
+
+            // address of disparity we want to compute
+            uint32_t d_addr;
+            d_addr = getAddressOffsetImage1(u, v, width);
+
+
+
+
+            // compute line start address
+            int32_t  line_offset = 16 * width*max(min(v, height - 3), 2);
+            uint8_t *I1_line_addr, *I2_line_addr;
+//            if (!right_image) {
+                I1_line_addr = I1_desc + line_offset;
+                I2_line_addr = I2_desc + line_offset;
+//            }
+//            else {
+//                I1_line_addr = I2_desc + line_offset;
+//                I2_line_addr = I1_desc + line_offset;
+//            }
+
+            // compute I1 block start address
+//            uint8_t* I1_block_addr = I1_line_addr + 16 * u;
+uint8_t* I1_block_addr = I1_desc_share + 16 * u;
+
+            // does this patch have enough texture?
+            int32_t sum = 0;
+
+        //#pragma unroll
+        //    for (int32_t i = 0; i<16; i++)
+        //        sum += abs((int32_t)(*(I1_block_addr + i)) - 127);
+        //    if (sum<match_texture)
+        //        return;
+
+            // compute disparity, min disparity and max disparity of plane prior
+            int32_t d_plane = (int32_t)(plane_a*(float)u + plane_b*(float)v + plane_c);
+            int32_t d_plane_min = max(d_plane - plane_radius, 0);
+            int32_t d_plane_max = min(d_plane + plane_radius, disp_num - 1);
+
+            // get grid pointer
+            int32_t  grid_x = (int32_t)floor((float)u / (float)grid_size);
+            int32_t  grid_y = (int32_t)floor((float)v / (float)grid_size);
+//            uint32_t grid_addr = getAddressOffsetGrid1(grid_x, grid_y, 0, grid_dims[1], grid_dims[0]);
+//            int32_t  num_grid = *(disparity_grid + grid_addr);
+            uint32_t grid_addr = grid_x * grid_dims_g[0];
+
+            int32_t  num_grid = *(disparity_grid_g + grid_addr);
+
+
+
+            int32_t* d_grid = disparity_grid_g + grid_addr + 1;
+
+            // loop variables
+            int32_t d_curr, u_warp, val;
+            int32_t min_val = 10000;
+            int32_t min_d = -1;
+
+
+            // left image
+
+            if (!right_image) {
+        //#pragma unroll
+                for (int32_t i = 0; i<num_grid; i++) {
+                    d_curr = d_grid[i];
+                    if (d_curr<d_plane_min || d_curr>d_plane_max) {
+                        u_warp = u - d_curr;
+                        if (u_warp<window_size || u_warp >= width - window_size)
+                            continue;
+//                        updatePosteriorMinimum((__m128i*)(I2_line_addr+16*u_warp),d_curr,xmm1,xmm2,val,min_val,min_d);
+//                        updatePosteriorMinimumNew(I1_block_addr, I2_line_addr + 16 * u_warp, d_curr, val, min_val, min_d);
+                          updatePosteriorMinimumNew(I1_block_addr, I2_desc_share + 16 * u_warp, d_curr, val, min_val, min_d);
+
+                    }
+                }
+        //#pragma unroll
+                for (d_curr = d_plane_min; d_curr <= d_plane_max; d_curr++) {
+                    u_warp = u - d_curr;
+                    if (u_warp<window_size || u_warp >= width - window_size)
+                        continue;
+//                    updatePosteriorMinimum((__m128i*)(I2_line_addr+16*u_warp),d_curr,valid?*(P+abs(d_curr-d_plane)):0,xmm1,xmm2,val,min_val,min_d);
+//                    updatePosteriorMinimumNew1(I1_block_addr, I2_line_addr + 16 * u_warp, d_curr, valid ? *(P + abs(d_curr - d_plane)) : 0, val, min_val, min_d);
+                    updatePosteriorMinimumNew1(I1_block_addr, I2_desc_share + 16 * u_warp, d_curr, valid ? *(P + abs(d_curr - d_plane)) : 0, val, min_val, min_d);
+                }
+
+                // right image
+            }
+            else {
+        //#pragma unroll
+                for (int32_t i = 0; i<num_grid; i++) {
+                    d_curr = d_grid[i];
+                    if (d_curr<d_plane_min || d_curr>d_plane_max) {
+                        u_warp = u + d_curr;
+                        if (u_warp<window_size || u_warp >= width - window_size)
+                            continue;
+//                        updatePosteriorMinimum((__m128i*)(I2_line_addr+16*u_warp),d_curr,xmm1,xmm2,val,min_val,min_d);
+//                        updatePosteriorMinimumNew(I1_block_addr, I2_line_addr + 16 * u_warp, d_curr, val, min_val, min_d);
+                        updatePosteriorMinimumNew(I1_block_addr, I2_desc_share + 16 * u_warp, d_curr, val, min_val, min_d);
+                    }
+                }
+        //#pragma unroll
+                for (d_curr = d_plane_min; d_curr <= d_plane_max; d_curr++) {
+                    u_warp = u + d_curr;
+                    if (u_warp<window_size || u_warp >= width - window_size)
+                        continue;
+//                    updatePosteriorMinimum((__m128i*)(I2_line_addr+16*u_warp),d_curr,valid?*(P+abs(d_curr-d_plane)):0,xmm1,xmm2,val,min_val,min_d);
+//                    updatePosteriorMinimumNew1(I1_block_addr, I2_line_addr + 16 * u_warp, d_curr, valid ? *(P + abs(d_curr - d_plane)) : 0, val, min_val, min_d);
+                    updatePosteriorMinimumNew1(I1_block_addr, I2_desc_share + 16 * u_warp, d_curr, valid ? *(P + abs(d_curr - d_plane)) : 0, val, min_val, min_d);
+                }
+            }
+
+
+
+            // set disparity value
+            if (min_d >= 0) *(D + d_addr) = min_d; // MAP value (min neg-Log probability)
+            else          *(D + d_addr) = -1;    // invalid disparity
+
+
+
+
+
+        }
+        u++;
+
+
+
+

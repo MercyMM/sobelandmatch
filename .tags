@@ -1,0 +1,729 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+Absolute	triangle.cpp	2279;"	d	file:
+BADSUBSEGPERBLOCK	triangle.cpp	216;"	d	file:
+BADTRIPERBLOCK	triangle.cpp	217;"	d	file:
+BUF_SIZE	imageelas.h	38;"	d
+CreateCommandQueue	cl_user.cpp	/^cl_command_queue CreateCommandQueue(cl_context context, cl_device_id *device)$/;"	f
+CreateContext	cl_user.cpp	/^cl_context CreateContext()$/;"	f
+CreateProgram	cl_user.cpp	/^cl_program CreateProgram(cl_context context, cl_device_id device, const char* fileName)$/;"	f
+DEADVERTEX	triangle.cpp	228;"	d	file:
+DUPLICATEVERTEX	triangle.cpp	/^                         DUPLICATEVERTEX};$/;"	e	enum:insertvertexresult	file:
+Descriptor	descriptor.cpp	/^Descriptor::Descriptor(uint8_t* I,int32_t width,int32_t height,int32_t bpl,bool half_resolution) {$/;"	f	class:Descriptor
+Descriptor	descriptor.h	/^class Descriptor {$/;"	c
+ENCROACHINGVERTEX	triangle.cpp	/^enum insertvertexresult {SUCCESSFULVERTEX, ENCROACHINGVERTEX, VIOLATINGVERTEX,$/;"	e	enum:insertvertexresult	file:
+Elas	elas.h	/^  Elas (parameters param) : param(param) {}$/;"	f	class:Elas
+Elas	elas.h	/^class Elas {$/;"	c
+FILENAMESIZE	triangle.cpp	201;"	d	file:
+FLIPSTACKERPERBLOCK	triangle.cpp	218;"	d	file:
+FLOAT	matrix.h	/^typedef double FLOAT;      \/\/ double precision$/;"	t
+FMAX	matrix.cpp	11;"	d	file:
+FREEVERTEX	triangle.cpp	227;"	d	file:
+Fast_Two_Sum	triangle.cpp	2299;"	d	file:
+Fast_Two_Sum_Tail	triangle.cpp	2295;"	d	file:
+I1	clelas.h	/^  uint8_t *I1,*I2;$/;"	m	class:clElas
+I1	elas.h	/^  uint8_t *I1,*I2;$/;"	m	class:Elas
+I2	clelas.h	/^  uint8_t *I1,*I2;$/;"	m	class:clElas
+I2	elas.h	/^  uint8_t *I1,*I2;$/;"	m	class:Elas
+IMAGEELAS_H	imageelas.h	25;"	d
+IMIN	matrix.cpp	13;"	d	file:
+INPUTLINESIZE	triangle.cpp	206;"	d	file:
+INPUTVERTEX	triangle.cpp	225;"	d	file:
+INTRIANGLE	triangle.cpp	/^enum locateresult {INTRIANGLE, ONEDGE, ONVERTEX, OUTSIDE};$/;"	e	enum:locateresult	file:
+I_desc	descriptor.h	/^  uint8_t* I_desc;$/;"	m	class:Descriptor
+Initialize	vibe.cpp	/^void Initialize(CvMat* pFrameMat,RNG rng)$/;"	f
+LEFTCOLLINEAR	triangle.cpp	/^enum finddirectionresult {WITHIN, LEFTCOLLINEAR, RIGHTCOLLINEAR};$/;"	e	enum:finddirectionresult	file:
+MATRIX_H	matrix.h	3;"	d
+MIDDLEBURY	clelas.h	/^  enum setting {ROBOTICS,MIDDLEBURY};$/;"	e	enum:clElas::setting
+MIDDLEBURY	elas.h	/^  enum setting {ROBOTICS,MIDDLEBURY};$/;"	e	enum:Elas::setting
+Matrix	matrix.cpp	/^Matrix::Matrix () {$/;"	f	class:Matrix
+Matrix	matrix.cpp	/^Matrix::Matrix (const Matrix &M) {$/;"	f	class:Matrix
+Matrix	matrix.cpp	/^Matrix::Matrix (const int32_t m_,const int32_t n_) {$/;"	f	class:Matrix
+Matrix	matrix.cpp	/^Matrix::Matrix (const int32_t m_,const int32_t n_,const FLOAT* val_) {$/;"	f	class:Matrix
+Matrix	matrix.h	/^class Matrix {$/;"	c
+ONEDGE	triangle.cpp	/^enum locateresult {INTRIANGLE, ONEDGE, ONVERTEX, OUTSIDE};$/;"	e	enum:locateresult	file:
+ONETHIRD	triangle.cpp	255;"	d	file:
+ONVERTEX	triangle.cpp	/^enum locateresult {INTRIANGLE, ONEDGE, ONVERTEX, OUTSIDE};$/;"	e	enum:locateresult	file:
+OUTSIDE	triangle.cpp	/^enum locateresult {INTRIANGLE, ONEDGE, ONVERTEX, OUTSIDE};$/;"	e	enum:locateresult	file:
+PI	triangle.cpp	247;"	d	file:
+RIGHTCOLLINEAR	triangle.cpp	/^enum finddirectionresult {WITHIN, LEFTCOLLINEAR, RIGHTCOLLINEAR};$/;"	e	enum:finddirectionresult	file:
+ROBOTICS	clelas.h	/^  enum setting {ROBOTICS,MIDDLEBURY};$/;"	e	enum:clElas::setting
+ROBOTICS	elas.h	/^  enum setting {ROBOTICS,MIDDLEBURY};$/;"	e	enum:Elas::setting
+RoundUp	cl_user.cpp	/^size_t RoundUp(int groupSize, int globalSize)$/;"	f
+SAMPLEFACTOR	triangle.cpp	237;"	d	file:
+SAMPLERATE	triangle.cpp	243;"	d	file:
+SEGMENTVERTEX	triangle.cpp	226;"	d	file:
+SIGN	matrix.cpp	7;"	d	file:
+SPLAYNODEPERBLOCK	triangle.cpp	219;"	d	file:
+SQR	matrix.cpp	9;"	d	file:
+SQUAREROOTTWO	triangle.cpp	251;"	d	file:
+SUBSEGPERBLOCK	triangle.cpp	213;"	d	file:
+SUCCESSFULVERTEX	triangle.cpp	/^enum insertvertexresult {SUCCESSFULVERTEX, ENCROACHINGVERTEX, VIOLATINGVERTEX,$/;"	e	enum:insertvertexresult	file:
+SWAP	matrix.cpp	6;"	d	file:
+Split	triangle.cpp	2325;"	d	file:
+Square	triangle.cpp	2362;"	d	file:
+Square_Tail	triangle.cpp	2356;"	d	file:
+TRIPERBLOCK	triangle.cpp	212;"	d	file:
+Two_Diff	triangle.cpp	2321;"	d	file:
+Two_Diff_Tail	triangle.cpp	2314;"	d	file:
+Two_One_Diff	triangle.cpp	2373;"	d	file:
+Two_One_Product	triangle.cpp	2387;"	d	file:
+Two_One_Sum	triangle.cpp	2369;"	d	file:
+Two_Product	triangle.cpp	2339;"	d	file:
+Two_Product_Presplit	triangle.cpp	2346;"	d	file:
+Two_Product_Tail	triangle.cpp	2331;"	d	file:
+Two_Sum	triangle.cpp	2310;"	d	file:
+Two_Sum_Tail	triangle.cpp	2303;"	d	file:
+Two_Two_Diff	triangle.cpp	2381;"	d	file:
+Two_Two_Sum	triangle.cpp	2377;"	d	file:
+UNDEADVERTEX	triangle.cpp	229;"	d	file:
+VERTEXPERBLOCK	triangle.cpp	214;"	d	file:
+VIOLATINGVERTEX	triangle.cpp	/^enum insertvertexresult {SUCCESSFULVERTEX, ENCROACHINGVERTEX, VIOLATINGVERTEX,$/;"	e	enum:insertvertexresult	file:
+VIRUSPERBLOCK	triangle.cpp	215;"	d	file:
+WITHIN	triangle.cpp	/^enum finddirectionresult {WITHIN, LEFTCOLLINEAR, RIGHTCOLLINEAR};$/;"	e	enum:finddirectionresult	file:
+__CLELAS_H__	clelas.h	3;"	d
+__DESCRIPTOR_H__	descriptor.h	3;"	d
+__ELAS_H__	elas.h	3;"	d
+__FILTER_H__	filter.h	23;"	d
+access	imageelas.h	/^  T **access;$/;"	m	class:imageelas
+adaptiveMean	clelas.cpp	/^void clElas::adaptiveMean (float* D) {$/;"	f	class:clElas
+adaptiveMean	elas.cpp	/^void Elas::adaptiveMean (float* D) {$/;"	f	class:Elas
+addCornerSupportPoints	clelas.cpp	/^void clElas::addCornerSupportPoints(vector<support_pt> &p_support) {$/;"	f	class:clElas
+addCornerSupportPoints	elas.cpp	/^void Elas::addCornerSupportPoints(vector<support_pt> &p_support) {$/;"	f	class:Elas
+add_corners	clelas.h	/^    bool    add_corners;            \/\/ add support points at image corners with nearest neighbor disparities$/;"	m	struct:clElas::parameters
+add_corners	elas.h	/^    bool    add_corners;            \/\/ add support points at image corners with nearest neighbor disparities$/;"	m	struct:Elas::parameters
+alignbytes	triangle.cpp	/^  int alignbytes;$/;"	m	struct:memorypool	file:
+allocateMemory	matrix.cpp	/^void Matrix::allocateMemory (const int32_t m_,const int32_t n_) {$/;"	f	class:Matrix
+alternateaxes	triangle.cpp	/^void alternateaxes(vertex *sortarray, int arraysize, int axis)$/;"	f
+apex	triangle.cpp	953;"	d	file:
+areabound	triangle.cpp	1017;"	d	file:
+areaboundindex	triangle.cpp	/^  int areaboundindex;             \/* Index to find area bound of a triangle. *\/$/;"	m	struct:mesh	file:
+b	imageelas.h	/^typedef struct { uchar r, g, b; } rgb;$/;"	m	struct:__anon1
+background	vibe.h	13;"	d
+badsubseg	triangle.cpp	/^struct badsubseg {$/;"	s	file:
+badsubsegs	triangle.cpp	/^  struct memorypool badsubsegs;$/;"	m	struct:mesh	typeref:struct:mesh::memorypool	file:
+badtriang	triangle.cpp	/^struct badtriang {$/;"	s	file:
+badtriangles	triangle.cpp	/^  struct memorypool badtriangles;$/;"	m	struct:mesh	typeref:struct:mesh::memorypool	file:
+behavior	triangle.cpp	/^struct behavior {$/;"	s	file:
+beta	clelas.h	/^    float   beta;                   \/\/ image likelihood parameter$/;"	m	struct:clElas::parameters
+beta	elas.h	/^    float   beta;                   \/\/ image likelihood parameter$/;"	m	struct:Elas::parameters
+blob5x5	filter.cpp	/^  void blob5x5( const uint8_t* in, int16_t* out, int w, int h ) {$/;"	f	namespace:filter
+bond	triangle.cpp	967;"	d	file:
+bpl	clelas.h	/^  int32_t width,height,bpl;$/;"	m	class:clElas
+bpl	elas.h	/^  int32_t width,height,bpl;$/;"	m	class:Elas
+c1	clelas.h	/^    int32_t c1,c2,c3;$/;"	m	struct:clElas::triangle
+c1	elas.h	/^    int32_t c1,c2,c3;$/;"	m	struct:Elas::triangle
+c2	clelas.h	/^    int32_t c1,c2,c3;$/;"	m	struct:clElas::triangle
+c2	elas.h	/^    int32_t c1,c2,c3;$/;"	m	struct:Elas::triangle
+c3	clelas.h	/^    int32_t c1,c2,c3;$/;"	m	struct:clElas::triangle
+c3	elas.h	/^    int32_t c1,c2,c3;$/;"	m	struct:Elas::triangle
+c_xoff	vibe.cpp	/^static int c_xoff[9] = {-1,  -1,  -1,  1, 1, 1,  0, 0, 0};$/;"	v	file:
+c_yoff	vibe.cpp	/^static int c_yoff[9] = {-1,   0,   1, -1, 0, 1, -1, 0, 1};$/;"	v	file:
+candidate_stepsize	clelas.h	/^    int32_t candidate_stepsize;     \/\/ step size of regular grid on which support points are matched$/;"	m	struct:clElas::parameters
+candidate_stepsize	elas.h	/^    int32_t candidate_stepsize;     \/\/ step size of regular grid on which support points are matched$/;"	m	struct:Elas::parameters
+carveholes	triangle.cpp	/^void carveholes(struct mesh *m, struct behavior *b, float *holelist, int holes,$/;"	f
+ccwerrboundA	triangle.cpp	/^float ccwerrboundA, ccwerrboundB, ccwerrboundC;$/;"	v
+ccwerrboundB	triangle.cpp	/^float ccwerrboundA, ccwerrboundB, ccwerrboundC;$/;"	v
+ccwerrboundC	triangle.cpp	/^float ccwerrboundA, ccwerrboundB, ccwerrboundC;$/;"	v
+checkerboard5x5	filter.cpp	/^  void checkerboard5x5( const uint8_t* in, int16_t* out, int w, int h ) {$/;"	f	namespace:filter
+checkquality	triangle.cpp	/^  int checkquality;                  \/* Has quality triangulation begun yet? *\/$/;"	m	struct:mesh	file:
+checksegments	triangle.cpp	/^  int checksegments;         \/* Are there segments in the triangulation yet? *\/$/;"	m	struct:mesh	file:
+circletopcount	triangle.cpp	/^  long circletopcount;       \/* Number of circle top calculations performed. *\/$/;"	m	struct:mesh	file:
+circumcentercount	triangle.cpp	/^  long circumcentercount;  \/* Number of circumcenter calculations performed. *\/$/;"	m	struct:mesh	file:
+clCleanup	cl_user.cpp	/^void clCleanup(cl_context context, cl_command_queue commandQueue,$/;"	f
+clElas	clelas.h	/^  clElas (parameters param) : param(param) {$/;"	f	class:clElas
+clElas	clelas.h	/^class clElas {$/;"	c
+cl_sobelandcomputeSupportMatches	elas.cpp	/^vector<Elas::support_pt> Elas::cl_sobelandcomputeSupportMatches (uint8_t* I1_desc,uint8_t* I2_desc)$/;"	f	class:Elas
+clcomputeDisparity	clelas.cpp	/^void clElas::clcomputeDisparity(vector<support_pt> p_support,vector<triangle> tri,int32_t* disparity_grid,int32_t *grid_dims,$/;"	f	class:clElas
+clcomputeDisparityright	clelas.cpp	/^void clElas::clcomputeDisparityright(vector<support_pt> p_support,vector<triangle> tri,int32_t* disparity_grid,int32_t *grid_dims,$/;"	f	class:clElas
+commandQueue	clelas.h	/^  cl_command_queue commandQueue ;$/;"	m	class:clElas
+computeDelaunayTriangulation	clelas.cpp	/^vector<clElas::triangle> clElas::computeDelaunayTriangulation (vector<support_pt> p_support,int32_t right_image) {$/;"	f	class:clElas
+computeDelaunayTriangulation	elas.cpp	/^vector<Elas::triangle> Elas::computeDelaunayTriangulation (vector<support_pt> p_support,int32_t right_image) {$/;"	f	class:Elas
+computeDisparity	clelas.cpp	/^void clElas::computeDisparity(vector<support_pt> p_support,vector<triangle> tri,int32_t* disparity_grid,int32_t *grid_dims,$/;"	f	class:clElas
+computeDisparity	elas.cpp	/^void Elas::computeDisparity(vector<support_pt> p_support,vector<triangle> tri,int32_t* disparity_grid,int32_t *grid_dims,$/;"	f	class:Elas
+computeDisparityPlanes	clelas.cpp	/^void clElas::computeDisparityPlanes (vector<support_pt> p_support,vector<triangle> &tri,int32_t right_image) {$/;"	f	class:clElas
+computeDisparityPlanes	elas.cpp	/^void Elas::computeDisparityPlanes (vector<support_pt> p_support,vector<triangle> &tri,int32_t right_image) {$/;"	f	class:Elas
+computeMatchingDisparity	clelas.cpp	/^inline int16_t clElas::computeMatchingDisparity (const int32_t &u,const int32_t &v,uint8_t* I1_desc,uint8_t* I2_desc,const bool &right_image) {$/;"	f	class:clElas
+computeMatchingDisparity	elas.cpp	/^inline int16_t Elas::computeMatchingDisparity (const int32_t &u,const int32_t &v,uint8_t* I1_desc,uint8_t* I2_desc,const bool &right_image) {$/;"	f	class:Elas
+computeSupportMatches	clelas.cpp	/^vector<clElas::support_pt> clElas::computeSupportMatches (uint8_t* I1_desc,uint8_t* I2_desc) {$/;"	f	class:clElas
+computeSupportMatches	elas.cpp	/^vector<Elas::support_pt> Elas::computeSupportMatches (uint8_t* I1_desc,uint8_t* I2_desc) {$/;"	f	class:Elas
+conformdel	triangle.cpp	/^  int noholes, noexact, conformdel;$/;"	m	struct:behavior	file:
+constrainededge	triangle.cpp	/^void constrainededge(struct mesh *m, struct behavior *b,$/;"	f
+context	clelas.h	/^  cl_context context ;$/;"	m	class:clElas
+convex	triangle.cpp	/^  int regionattrib, convex, weighted, jettison;$/;"	m	struct:behavior	file:
+convolve_101_row_3x3_16bit	filter.cpp	/^    void convolve_101_row_3x3_16bit( const int16_t* in, uint8_t* out, int w, int h ) {$/;"	f	namespace:filter::detail
+convolve_12021_row_5x5_16bit	filter.cpp	/^    void convolve_12021_row_5x5_16bit( const int16_t* in, uint8_t* out, int w, int h ) {$/;"	f	namespace:filter::detail
+convolve_121_row_3x3_16bit	filter.cpp	/^    void convolve_121_row_3x3_16bit( const int16_t* in, uint8_t* out, int w, int h ) {$/;"	f	namespace:filter::detail
+convolve_14641_row_5x5_16bit	filter.cpp	/^    void convolve_14641_row_5x5_16bit( const int16_t* in, uint8_t* out, int w, int h ) {$/;"	f	namespace:filter::detail
+convolve_col_p1p1p0m1m1_5x5	filter.cpp	/^    void convolve_col_p1p1p0m1m1_5x5( const unsigned char* in, int16_t* out, int w, int h ) {$/;"	f	namespace:filter::detail
+convolve_cols_3x3	filter.cpp	/^    void convolve_cols_3x3( const unsigned char* in, int16_t* out_v, int16_t* out_h, int w, int h ) {$/;"	f	namespace:filter::detail
+convolve_cols_5x5	filter.cpp	/^    void convolve_cols_5x5( const unsigned char* in, int16_t* out_v, int16_t* out_h, int w, int h ) {$/;"	f	namespace:filter::detail
+convolve_row_p1p1p0m1m1_5x5	filter.cpp	/^    void convolve_row_p1p1p0m1m1_5x5( const int16_t* in, int16_t* out, int w, int h ) {$/;"	f	namespace:filter::detail
+copy	imageelas.h	/^template <class T> imageelas<T> *imageelas<T>::copy() const {$/;"	f	class:imageelas
+counterclockcount	triangle.cpp	/^  long counterclockcount;     \/* Number of counterclockwise tests performed. *\/$/;"	m	struct:mesh	file:
+counterclockwise	triangle.cpp	/^float counterclockwise(struct mesh *m, struct behavior *b,$/;"	f
+counterclockwiseadapt	triangle.cpp	/^float counterclockwiseadapt(vertex pa, vertex pb, vertex pc, float detsum)$/;"	f
+createDescriptor	descriptor.cpp	/^void Descriptor::createDescriptor (uint8_t* I_du,uint8_t* I_dv,int32_t width,int32_t height,int32_t bpl,bool half_resolution) {$/;"	f	class:Descriptor
+createGrid	clelas.cpp	/^void clElas::createGrid(vector<support_pt> p_support,int32_t* disparity_grid,int32_t* grid_dims,bool right_image) {$/;"	f	class:clElas
+createGrid	elas.cpp	/^void Elas::createGrid(vector<support_pt> p_support,int32_t* disparity_grid,int32_t* grid_dims,bool right_image) {$/;"	f	class:Elas
+cross	matrix.cpp	/^Matrix Matrix::cross (const Matrix &a, const Matrix &b) {$/;"	f	class:Matrix
+d	clelas.h	/^    int32_t d;$/;"	m	struct:clElas::support_pt
+d	elas.h	/^    int32_t d;$/;"	m	struct:Elas::support_pt
+data	imageelas.h	/^  T *data;$/;"	m	class:imageelas
+deaditemstack	triangle.cpp	/^  int *deaditemstack;$/;"	m	struct:memorypool	file:
+deadsubseg	triangle.cpp	1150;"	d	file:
+deadtri	triangle.cpp	1027;"	d	file:
+decode	triangle.cpp	822;"	d	file:
+defaultNbSamples	vibe.h	9;"	d
+defaultRadius	vibe.h	11;"	d
+defaultReqMatches	vibe.h	10;"	d
+defaultSubsamplingFactor	vibe.h	12;"	d
+delaunay	triangle.cpp	/^long delaunay(struct mesh *m, struct behavior *b)$/;"	f
+delaunayfixup	triangle.cpp	/^void delaunayfixup(struct mesh *m, struct behavior *b,$/;"	f
+dest	triangle.cpp	950;"	d	file:
+det	matrix.cpp	/^FLOAT Matrix::det () {$/;"	f	class:Matrix
+detail	filter.cpp	/^  namespace detail {$/;"	n	namespace:filter	file:
+detail	filter.h	/^  namespace detail {$/;"	n	namespace:filter
+device	clelas.h	/^  cl_device_id device ;$/;"	m	class:clElas
+diag	matrix.cpp	/^Matrix Matrix::diag (const Matrix &M) {$/;"	f	class:Matrix
+discriptor	clelas.cpp	/^void clElas::discriptor(cl_mem *imageObjects,uint8_t *I1_desc)$/;"	f	class:clElas
+disp_max	clelas.h	/^    int32_t disp_max;               \/\/ max disparity$/;"	m	struct:clElas::parameters
+disp_max	elas.h	/^    int32_t disp_max;               \/\/ max disparity$/;"	m	struct:Elas::parameters
+disp_min	clelas.h	/^    int32_t disp_min;               \/\/ min disparity$/;"	m	struct:clElas::parameters
+disp_min	elas.h	/^    int32_t disp_min;               \/\/ min disparity$/;"	m	struct:Elas::parameters
+dissolve	triangle.cpp	976;"	d	file:
+divconqdelaunay	triangle.cpp	/^long divconqdelaunay(struct mesh *m, struct behavior *b)$/;"	f
+divconqrecurse	triangle.cpp	/^void divconqrecurse(struct mesh *m, struct behavior *b, vertex *sortarray,$/;"	f
+dnext	triangle.cpp	896;"	d	file:
+dnextself	triangle.cpp	900;"	d	file:
+docheck	triangle.cpp	/^  int docheck;$/;"	m	struct:behavior	file:
+dprev	triangle.cpp	908;"	d	file:
+dprevself	triangle.cpp	912;"	d	file:
+dummyinit	triangle.cpp	/^void dummyinit(struct mesh *m, struct behavior *b, int trianglebytes,$/;"	f
+dummysub	triangle.cpp	/^  subseg *dummysub;$/;"	m	struct:mesh	file:
+dummysubbase	triangle.cpp	/^  subseg *dummysubbase;      \/* Keep base address so we can free() it later. *\/$/;"	m	struct:mesh	file:
+dummytri	triangle.cpp	/^  triangle *dummytri;$/;"	m	struct:mesh	file:
+dummytribase	triangle.cpp	/^  triangle *dummytribase;    \/* Keep base address so we can free() it later. *\/$/;"	m	struct:mesh	file:
+dwyer	triangle.cpp	/^  int incremental, sweepline, dwyer;$/;"	m	struct:behavior	file:
+edgelist	triangle.h	/^  int *edgelist;                                                 \/* Out only *\/$/;"	m	struct:triangulateio
+edgemarkerlist	triangle.h	/^  int *edgemarkerlist;            \/* Not used with Voronoi diagram; out only *\/$/;"	m	struct:triangulateio
+edges	triangle.cpp	/^  long edges;                                     \/* Number of output edges. *\/$/;"	m	struct:mesh	file:
+edgesout	triangle.cpp	/^  int edgesout, voronoi, neighbors, geomview;$/;"	m	struct:behavior	file:
+eextras	triangle.cpp	/^  int eextras;                         \/* Number of attributes per triangle. *\/$/;"	m	struct:mesh	file:
+elemattribindex	triangle.cpp	/^  int elemattribindex;            \/* Index to find attributes of a triangle. *\/$/;"	m	struct:mesh	file:
+elemattribute	triangle.cpp	1009;"	d	file:
+encode	triangle.cpp	831;"	d	file:
+encsubseg	triangle.cpp	/^  subseg encsubseg;                             \/* An encroached subsegment. *\/$/;"	m	struct:badsubseg	file:
+endll	matrix.h	24;"	d
+epsilon	triangle.cpp	/^float epsilon;                             \/* Floating-point machine epsilon. *\/$/;"	v
+estimate	triangle.cpp	/^float estimate(int elen, float *e)$/;"	f
+event	triangle.cpp	/^struct event {$/;"	s	file:
+eventptr	triangle.cpp	/^  int *eventptr;      \/* Can be a vertex or the location of a circle event. *\/$/;"	m	struct:event	file:
+exactinit	triangle.cpp	/^void exactinit()$/;"	f
+extractCols	matrix.cpp	/^Matrix Matrix::extractCols (vector<int> idx) {$/;"	f	class:Matrix
+eye	matrix.cpp	/^Matrix Matrix::eye (const int32_t m) {$/;"	f	class:Matrix
+eye	matrix.cpp	/^void Matrix::eye () {$/;"	f	class:Matrix
+fast_expansion_sum_zeroelim	triangle.cpp	/^int fast_expansion_sum_zeroelim(int elen, float *e, int flen, float *f, float *h)$/;"	f
+filter	filter.cpp	/^namespace filter {$/;"	n	file:
+filter	filter.h	/^namespace filter {$/;"	n
+filter_adaptive_mean	clelas.h	/^    bool    filter_adaptive_mean;   \/\/ optional adaptive mean filter (approximated)$/;"	m	struct:clElas::parameters
+filter_adaptive_mean	elas.h	/^    bool    filter_adaptive_mean;   \/\/ optional adaptive mean filter (approximated)$/;"	m	struct:Elas::parameters
+filter_median	clelas.h	/^    bool    filter_median;          \/\/ optional median filter (approximated)$/;"	m	struct:clElas::parameters
+filter_median	elas.h	/^    bool    filter_median;          \/\/ optional median filter (approximated)$/;"	m	struct:Elas::parameters
+findMatch	clelas.cpp	/^inline void clElas::findMatch(int32_t &u,int32_t &v,float &plane_a,float &plane_b,float &plane_c,$/;"	f	class:clElas
+findMatch	elas.cpp	/^inline void Elas::findMatch(int32_t &u,int32_t &v,float &plane_a,float &plane_b,float &plane_c,$/;"	f	class:Elas
+findcircumcenter	triangle.cpp	/^void findcircumcenter(struct mesh *m, struct behavior *b,$/;"	f
+finddirection	triangle.cpp	/^enum finddirectionresult finddirection(struct mesh *m, struct behavior *b,$/;"	f
+finddirectionresult	triangle.cpp	/^enum finddirectionresult {WITHIN, LEFTCOLLINEAR, RIGHTCOLLINEAR};$/;"	g	file:
+firstblock	triangle.cpp	/^  int **firstblock, **nowblock;$/;"	m	struct:memorypool	file:
+firstnonemptyq	triangle.cpp	/^  int firstnonemptyq;$/;"	m	struct:mesh	file:
+firstnumber	triangle.cpp	/^  int firstnumber;$/;"	m	struct:behavior	file:
+fixedarea	triangle.cpp	/^  int poly, refine, quality, vararea, fixedarea, usertest;$/;"	m	struct:behavior	file:
+flip	triangle.cpp	/^void flip(struct mesh *m, struct behavior *b, struct otri *flipedge)$/;"	f
+flippedtri	triangle.cpp	/^  triangle flippedtri;                       \/* A recently flipped triangle. *\/$/;"	m	struct:flipstacker	file:
+flipstacker	triangle.cpp	/^struct flipstacker {$/;"	s	file:
+flipstackers	triangle.cpp	/^  struct memorypool flipstackers;$/;"	m	struct:mesh	typeref:struct:mesh::memorypool	file:
+foreground	vibe.h	14;"	d
+formskeleton	triangle.cpp	/^void formskeleton(struct mesh *m, struct behavior *b, int *segmentlist,$/;"	f
+g	imageelas.h	/^typedef struct { uchar r, g, b; } rgb;$/;"	m	struct:__anon1
+gamma	clelas.h	/^    float   gamma;                  \/\/ prior constant$/;"	m	struct:clElas::parameters
+gamma	elas.h	/^    float   gamma;                  \/\/ prior constant$/;"	m	struct:Elas::parameters
+gapInterpolation	clelas.cpp	/^void clElas::gapInterpolation(float* D) {$/;"	f	class:clElas
+gapInterpolation	elas.cpp	/^void Elas::gapInterpolation(float* D) {$/;"	f	class:Elas
+geomview	triangle.cpp	/^  int edgesout, voronoi, neighbors, geomview;$/;"	m	struct:behavior	file:
+getAddressOffsetGrid	clelas.h	/^  inline uint32_t getAddressOffsetGrid (const int32_t& x,const int32_t& y,const int32_t& d,const int32_t& width,const int32_t& disp_num) {$/;"	f	class:clElas
+getAddressOffsetGrid	elas.h	/^  inline uint32_t getAddressOffsetGrid (const int32_t& x,const int32_t& y,const int32_t& d,const int32_t& width,const int32_t& disp_num) {$/;"	f	class:Elas
+getAddressOffsetImage	clelas.h	/^  inline uint32_t getAddressOffsetImage (const int32_t& u,const int32_t& v,const int32_t& width) {$/;"	f	class:clElas
+getAddressOffsetImage	elas.h	/^  inline uint32_t getAddressOffsetImage (const int32_t& u,const int32_t& v,const int32_t& width) {$/;"	f	class:Elas
+getData	matrix.cpp	/^void Matrix::getData(FLOAT* val_,int32_t i1,int32_t j1,int32_t i2,int32_t j2) {$/;"	f	class:Matrix
+getMat	matrix.cpp	/^Matrix Matrix::getMat(int32_t i1,int32_t j1,int32_t i2,int32_t j2) {$/;"	f	class:Matrix
+getvertex	triangle.cpp	/^vertex getvertex(struct mesh *m, struct behavior *b, int number)$/;"	f
+goodangle	triangle.cpp	/^  float minangle, goodangle, offconstant;$/;"	m	struct:behavior	file:
+grid_size	clelas.h	/^    int32_t grid_size;              \/\/ size of neighborhood for additional support point extrapolation$/;"	m	struct:clElas::parameters
+grid_size	elas.h	/^    int32_t grid_size;              \/\/ size of neighborhood for additional support point extrapolation$/;"	m	struct:Elas::parameters
+h	imageelas.h	/^  int w, h;$/;"	m	class:imageelas
+heapposition	triangle.cpp	/^  int heapposition;              \/* Marks this event's position in the heap. *\/$/;"	m	struct:event	file:
+height	clelas.h	/^  int32_t width,height,bpl;$/;"	m	class:clElas
+height	elas.h	/^  int32_t width,height,bpl;$/;"	m	class:Elas
+height	imageelas.h	/^  int height() const { return h; }$/;"	f	class:imageelas
+highorder	triangle.cpp	/^void highorder(struct mesh *m, struct behavior *b)$/;"	f
+highorderindex	triangle.cpp	/^  int highorderindex;  \/* Index to find extra nodes for high-order elements. *\/$/;"	m	struct:mesh	file:
+holelist	triangle.h	/^  float *holelist;                        \/* In \/ pointer to array copied out *\/$/;"	m	struct:triangulateio
+holes	triangle.cpp	/^  int holes;                                       \/* Number of input holes. *\/$/;"	m	struct:mesh	file:
+hullsize	triangle.cpp	/^  long hullsize;                          \/* Number of edges in convex hull. *\/$/;"	m	struct:mesh	file:
+hyperbolacount	triangle.cpp	/^  long hyperbolacount;      \/* Number of right-of-hyperbola tests performed. *\/$/;"	m	struct:mesh	file:
+iccerrboundA	triangle.cpp	/^float iccerrboundA, iccerrboundB, iccerrboundC;$/;"	v
+iccerrboundB	triangle.cpp	/^float iccerrboundA, iccerrboundB, iccerrboundC;$/;"	v
+iccerrboundC	triangle.cpp	/^float iccerrboundA, iccerrboundB, iccerrboundC;$/;"	v
+imPtr	imageelas.h	36;"	d
+imRef	imageelas.h	33;"	d
+imageelas	imageelas.h	/^template <class T> class imageelas {$/;"	c
+imageelas	imageelas.h	/^template <class T> imageelas<T>::imageelas(const int width, const int height, const bool init) {$/;"	f	class:imageelas
+iminarg1	matrix.cpp	/^static int32_t iminarg1,iminarg2;$/;"	v	file:
+iminarg2	matrix.cpp	/^static int32_t iminarg1,iminarg2;$/;"	v	file:
+incircle	triangle.cpp	/^float incircle(struct mesh *m, struct behavior *b,$/;"	f
+incircleadapt	triangle.cpp	/^float incircleadapt(vertex pa, vertex pb, vertex pc, vertex pd, float permanent)$/;"	f
+incirclecount	triangle.cpp	/^  long incirclecount;                 \/* Number of incircle tests performed. *\/$/;"	m	struct:mesh	file:
+incon_min_support	clelas.h	/^    int32_t incon_min_support;      \/\/ minimum number of consistent support points$/;"	m	struct:clElas::parameters
+incon_min_support	elas.h	/^    int32_t incon_min_support;      \/\/ minimum number of consistent support points$/;"	m	struct:Elas::parameters
+incon_threshold	clelas.h	/^    int32_t incon_threshold;        \/\/ disparity similarity threshold for support point to be considered consistent$/;"	m	struct:clElas::parameters
+incon_threshold	elas.h	/^    int32_t incon_threshold;        \/\/ disparity similarity threshold for support point to be considered consistent$/;"	m	struct:Elas::parameters
+incon_window_size	clelas.h	/^    int32_t incon_window_size;      \/\/ window size of inconsistent support point check$/;"	m	struct:clElas::parameters
+incon_window_size	elas.h	/^    int32_t incon_window_size;      \/\/ window size of inconsistent support point check$/;"	m	struct:Elas::parameters
+incremental	triangle.cpp	/^  int incremental, sweepline, dwyer;$/;"	m	struct:behavior	file:
+inelements	triangle.cpp	/^  int inelements;                              \/* Number of input triangles. *\/$/;"	m	struct:mesh	file:
+infect	triangle.cpp	994;"	d	file:
+infected	triangle.cpp	1004;"	d	file:
+infecthull	triangle.cpp	/^void infecthull(struct mesh *m, struct behavior *b)$/;"	f
+infvertex1	triangle.cpp	/^  vertex infvertex1, infvertex2, infvertex3;$/;"	m	struct:mesh	file:
+infvertex2	triangle.cpp	/^  vertex infvertex1, infvertex2, infvertex3;$/;"	m	struct:mesh	file:
+infvertex3	triangle.cpp	/^  vertex infvertex1, infvertex2, infvertex3;$/;"	m	struct:mesh	file:
+init	imageelas.h	/^template <class T> void imageelas<T>::init(const T &val) {$/;"	f	class:imageelas
+initializetrisubpools	triangle.cpp	/^void initializetrisubpools(struct mesh *m, struct behavior *b)$/;"	f
+initializevertexpool	triangle.cpp	/^void initializevertexpool(struct mesh *m, struct behavior *b)$/;"	f
+insegments	triangle.cpp	/^  int insegments;                               \/* Number of input segments. *\/$/;"	m	struct:mesh	file:
+insertsegment	triangle.cpp	/^void insertsegment(struct mesh *m, struct behavior *b,$/;"	f
+insertsubseg	triangle.cpp	/^void insertsubseg(struct mesh *m, struct behavior *b, struct otri *tri,$/;"	f
+insertvertex	triangle.cpp	/^enum insertvertexresult insertvertex(struct mesh *m, struct behavior *b,$/;"	f
+insertvertexresult	triangle.cpp	/^enum insertvertexresult {SUCCESSFULVERTEX, ENCROACHINGVERTEX, VIOLATINGVERTEX,$/;"	g	file:
+int16_t	clelas.h	/^  typedef __int16           int16_t;$/;"	t
+int16_t	descriptor.h	/^  typedef __int16           int16_t;$/;"	t
+int16_t	elas.h	/^  typedef __int16           int16_t;$/;"	t
+int16_t	filter.cpp	/^  typedef __int16           int16_t;$/;"	t	file:
+int16_t	filter.h	/^  typedef __int16           int16_t;$/;"	t
+int16_t	matrix.h	/^  typedef __int16           int16_t;$/;"	t
+int32_t	clelas.h	/^  typedef __int32           int32_t;$/;"	t
+int32_t	descriptor.h	/^  typedef __int32           int32_t;$/;"	t
+int32_t	elas.h	/^  typedef __int32           int32_t;$/;"	t
+int32_t	filter.cpp	/^  typedef __int32           int32_t;$/;"	t	file:
+int32_t	filter.h	/^  typedef __int32           int32_t;$/;"	t
+int32_t	matrix.h	/^  typedef __int32           int32_t;$/;"	t
+int64_t	clelas.h	/^  typedef __int64           int64_t;$/;"	t
+int64_t	descriptor.h	/^  typedef __int64           int64_t;$/;"	t
+int64_t	elas.h	/^  typedef __int64           int64_t;$/;"	t
+int64_t	filter.cpp	/^  typedef __int64           int64_t;$/;"	t	file:
+int64_t	filter.h	/^  typedef __int64           int64_t;$/;"	t
+int64_t	matrix.h	/^  typedef __int64           int64_t;$/;"	t
+int8_t	clelas.h	/^  typedef char            int8_t;$/;"	t
+int8_t	descriptor.h	/^  typedef __int8            int8_t;$/;"	t
+int8_t	elas.h	/^  typedef __int8            int8_t;$/;"	t
+int8_t	filter.cpp	/^  typedef __int8            int8_t;$/;"	t	file:
+int8_t	filter.h	/^  typedef __int8            int8_t;$/;"	t
+int8_t	matrix.h	/^  typedef __int8            int8_t;$/;"	t
+integral_image	filter.cpp	/^    void integral_image( const uint8_t* in, int32_t* out, int w, int h ) {$/;"	f	namespace:filter::detail
+internalerror	triangle.cpp	/^void internalerror()$/;"	f
+inv	matrix.cpp	/^Matrix Matrix::inv (const Matrix &M) {$/;"	f	class:Matrix
+inv	matrix.cpp	/^bool Matrix::inv () {$/;"	f	class:Matrix
+invertices	triangle.cpp	/^  int invertices;                               \/* Number of input vertices. *\/$/;"	m	struct:mesh	file:
+ipol_gap_width	clelas.h	/^    int32_t ipol_gap_width;         \/\/ interpolate small gaps (left<->right, top<->bottom)$/;"	m	struct:clElas::parameters
+ipol_gap_width	elas.h	/^    int32_t ipol_gap_width;         \/\/ interpolate small gaps (left<->right, top<->bottom)$/;"	m	struct:Elas::parameters
+itembytes	triangle.cpp	/^  int itembytes;$/;"	m	struct:memorypool	file:
+items	triangle.cpp	/^  long items, maxitems;$/;"	m	struct:memorypool	file:
+itemsfirstblock	triangle.cpp	/^  int itemsfirstblock;$/;"	m	struct:memorypool	file:
+itemsperblock	triangle.cpp	/^  int itemsperblock;$/;"	m	struct:memorypool	file:
+jettison	triangle.cpp	/^  int regionattrib, convex, weighted, jettison;$/;"	m	struct:behavior	file:
+kernel	clelas.h	/^  cl_kernel kernel ;$/;"	m	class:clElas
+key	triangle.cpp	/^  float key;                             \/* cos^2 of smallest (apical) angle. *\/$/;"	m	struct:badtriang	file:
+keydest	triangle.cpp	/^  vertex keydest;           \/* Used to verify that splay node is still live. *\/$/;"	m	struct:splaynode	file:
+keyedge	triangle.cpp	/^  struct otri keyedge;                     \/* Lprev of an edge on the front. *\/$/;"	m	struct:splaynode	typeref:struct:splaynode::otri	file:
+killsubseg	triangle.cpp	1152;"	d	file:
+killtri	triangle.cpp	1029;"	d	file:
+l2norm	matrix.cpp	/^FLOAT Matrix::l2norm () {$/;"	f	class:Matrix
+lastflip	triangle.cpp	/^  struct flipstacker *lastflip;$/;"	m	struct:mesh	typeref:struct:mesh::flipstacker	file:
+lchild	triangle.cpp	/^  struct splaynode *lchild, *rchild;              \/* Children in splay tree. *\/$/;"	m	struct:splaynode	typeref:struct:splaynode::splaynode	file:
+leftRightConsistencyCheck	clelas.cpp	/^void clElas::leftRightConsistencyCheck(float* D1,float* D2) {$/;"	f	class:clElas
+leftRightConsistencyCheck	elas.cpp	/^void Elas::leftRightConsistencyCheck(float* D1,float* D2) {$/;"	f	class:Elas
+lnext	triangle.cpp	852;"	d	file:
+lnextself	triangle.cpp	856;"	d	file:
+loadPGM	imageelas.h	/^imageelas<uchar> *loadPGM(const char *name) {$/;"	f
+locate	triangle.cpp	/^enum locateresult locate(struct mesh *m, struct behavior *b,$/;"	f
+locateresult	triangle.cpp	/^enum locateresult {INTRIANGLE, ONEDGE, ONVERTEX, OUTSIDE};$/;"	g	file:
+lprev	triangle.cpp	861;"	d	file:
+lprevself	triangle.cpp	865;"	d	file:
+lr_threshold	clelas.h	/^    int32_t lr_threshold;           \/\/ disparity threshold for left\/right consistency check$/;"	m	struct:clElas::parameters
+lr_threshold	elas.h	/^    int32_t lr_threshold;           \/\/ disparity threshold for left\/right consistency check$/;"	m	struct:Elas::parameters
+lu	matrix.cpp	/^bool Matrix::lu(int32_t *idx, FLOAT &d, FLOAT eps) {$/;"	f	class:Matrix
+m	matrix.h	/^  int32_t   m,n;$/;"	m	class:Matrix
+main	main.cpp	/^int main(int argc, char** argv)$/;"	f
+makesubseg	triangle.cpp	/^void makesubseg(struct mesh *m, struct osub *newsubseg)$/;"	f
+maketriangle	triangle.cpp	/^void maketriangle(struct mesh *m, struct behavior *b, struct otri *newotri)$/;"	f
+makevertexmap	triangle.cpp	/^void makevertexmap(struct mesh *m, struct behavior *b)$/;"	f
+mark	triangle.cpp	1116;"	d	file:
+markhull	triangle.cpp	/^void markhull(struct mesh *m, struct behavior *b)$/;"	f
+match_texture	clelas.h	/^    int32_t match_texture;          \/\/ min texture for dense matching$/;"	m	struct:clElas::parameters
+match_texture	elas.h	/^    int32_t match_texture;          \/\/ min texture for dense matching$/;"	m	struct:Elas::parameters
+maxarea	triangle.cpp	/^  float maxarea;$/;"	m	struct:behavior	file:
+maxarg1	matrix.cpp	/^static FLOAT maxarg1,maxarg2;$/;"	v	file:
+maxarg2	matrix.cpp	/^static FLOAT maxarg1,maxarg2;$/;"	v	file:
+maxitems	triangle.cpp	/^  long items, maxitems;$/;"	m	struct:memorypool	file:
+mean	matrix.cpp	/^FLOAT Matrix::mean () {$/;"	f	class:Matrix
+median	clelas.cpp	/^void clElas::median (float* D) {$/;"	f	class:clElas
+median	elas.cpp	/^void Elas::median (float* D) {$/;"	f	class:Elas
+memorypool	triangle.cpp	/^struct memorypool {$/;"	s	file:
+mergehulls	triangle.cpp	/^void mergehulls(struct mesh *m, struct behavior *b, struct otri *farleft,$/;"	f
+mesh	triangle.cpp	/^struct mesh {$/;"	s	file:
+mesh_dim	triangle.cpp	/^  int mesh_dim;                                \/* Dimension (ought to be 2). *\/$/;"	m	struct:mesh	file:
+minangle	triangle.cpp	/^  float minangle, goodangle, offconstant;$/;"	m	struct:behavior	file:
+minus1mod3	triangle.cpp	/^int minus1mod3[3] = {2, 0, 1};$/;"	v
+n	matrix.h	/^  int32_t   m,n;$/;"	m	class:Matrix
+neighborlist	triangle.h	/^  int *neighborlist;                                             \/* Out only *\/$/;"	m	struct:triangulateio
+neighbors	triangle.cpp	/^  int edgesout, voronoi, neighbors, geomview;$/;"	m	struct:behavior	file:
+nextitem	triangle.cpp	/^  int *nextitem;$/;"	m	struct:memorypool	file:
+nextnonemptyq	triangle.cpp	/^  int nextnonemptyq[4096];$/;"	m	struct:mesh	file:
+nextras	triangle.cpp	/^  int nextras;                           \/* Number of attributes per vertex. *\/$/;"	m	struct:mesh	file:
+nexttriang	triangle.cpp	/^  struct badtriang *nexttriang;             \/* Pointer to next bad triangle. *\/$/;"	m	struct:badtriang	typeref:struct:badtriang::badtriang	file:
+nobisect	triangle.cpp	/^  int nobisect;$/;"	m	struct:behavior	file:
+nobound	triangle.cpp	/^  int nobound, nopolywritten, nonodewritten, noelewritten, noiterationnum;$/;"	m	struct:behavior	file:
+noelewritten	triangle.cpp	/^  int nobound, nopolywritten, nonodewritten, noelewritten, noiterationnum;$/;"	m	struct:behavior	file:
+noexact	triangle.cpp	/^  int noholes, noexact, conformdel;$/;"	m	struct:behavior	file:
+noholes	triangle.cpp	/^  int noholes, noexact, conformdel;$/;"	m	struct:behavior	file:
+noiterationnum	triangle.cpp	/^  int nobound, nopolywritten, nonodewritten, noelewritten, noiterationnum;$/;"	m	struct:behavior	file:
+nonodewritten	triangle.cpp	/^  int nobound, nopolywritten, nonodewritten, noelewritten, noiterationnum;$/;"	m	struct:behavior	file:
+nonregular	triangle.cpp	/^float nonregular(struct mesh *m, struct behavior *b,$/;"	f
+nopolywritten	triangle.cpp	/^  int nobound, nopolywritten, nonodewritten, noelewritten, noiterationnum;$/;"	m	struct:behavior	file:
+normlist	triangle.h	/^  float *normlist;                \/* Used only with Voronoi diagram; out only *\/$/;"	m	struct:triangulateio
+nowblock	triangle.cpp	/^  int **firstblock, **nowblock;$/;"	m	struct:memorypool	file:
+numbernodes	triangle.cpp	/^void numbernodes(struct mesh *m, struct behavior *b)$/;"	f
+numberofcorners	triangle.h	/^  int numberofcorners;                                           \/* In \/ out *\/$/;"	m	struct:triangulateio
+numberofedges	triangle.h	/^  int numberofedges;                                             \/* Out only *\/$/;"	m	struct:triangulateio
+numberofholes	triangle.h	/^  int numberofholes;                                      \/* In \/ copied out *\/$/;"	m	struct:triangulateio
+numberofpointattributes	triangle.h	/^  int numberofpointattributes;                                   \/* In \/ out *\/$/;"	m	struct:triangulateio
+numberofpoints	triangle.h	/^  int numberofpoints;                                            \/* In \/ out *\/$/;"	m	struct:triangulateio
+numberofregions	triangle.h	/^  int numberofregions;                                    \/* In \/ copied out *\/$/;"	m	struct:triangulateio
+numberofsegments	triangle.h	/^  int numberofsegments;                                          \/* In \/ out *\/$/;"	m	struct:triangulateio
+numberoftriangleattributes	triangle.h	/^  int numberoftriangleattributes;                                \/* In \/ out *\/$/;"	m	struct:triangulateio
+numberoftriangles	triangle.h	/^  int numberoftriangles;                                         \/* In \/ out *\/$/;"	m	struct:triangulateio
+o3derrboundA	triangle.cpp	/^float o3derrboundA, o3derrboundB, o3derrboundC;$/;"	v
+o3derrboundB	triangle.cpp	/^float o3derrboundA, o3derrboundB, o3derrboundC;$/;"	v
+o3derrboundC	triangle.cpp	/^float o3derrboundA, o3derrboundB, o3derrboundC;$/;"	v
+offconstant	triangle.cpp	/^  float minangle, goodangle, offconstant;$/;"	m	struct:behavior	file:
+onext	triangle.cpp	872;"	d	file:
+onextself	triangle.cpp	876;"	d	file:
+operator *	matrix.cpp	/^Matrix Matrix::operator* (const FLOAT &s) {$/;"	f	class:Matrix
+operator *	matrix.cpp	/^Matrix Matrix::operator* (const Matrix &M) {$/;"	f	class:Matrix
+operator +	matrix.cpp	/^Matrix Matrix::operator+ (const Matrix &M) {$/;"	f	class:Matrix
+operator -	matrix.cpp	/^Matrix Matrix::operator- () {$/;"	f	class:Matrix
+operator -	matrix.cpp	/^Matrix Matrix::operator- (const Matrix &M) {$/;"	f	class:Matrix
+operator /	matrix.cpp	/^Matrix Matrix::operator\/ (const FLOAT &s) {$/;"	f	class:Matrix
+operator /	matrix.cpp	/^Matrix Matrix::operator\/ (const Matrix &M) {$/;"	f	class:Matrix
+operator <<	matrix.cpp	/^ostream& operator<< (ostream& out,const Matrix& M) {$/;"	f
+operator =	matrix.cpp	/^Matrix& Matrix::operator= (const Matrix &M) {$/;"	f	class:Matrix
+operator ==	imageelas.h	/^inline bool operator==(const rgb &a, const rgb &b) {$/;"	f
+operator ~	matrix.cpp	/^Matrix Matrix::operator~ () {$/;"	f	class:Matrix
+oprev	triangle.cpp	884;"	d	file:
+oprevself	triangle.cpp	888;"	d	file:
+order	triangle.cpp	/^  int order;$/;"	m	struct:behavior	file:
+org	triangle.cpp	947;"	d	file:
+orient	triangle.cpp	/^  int orient;                                         \/* Ranges from 0 to 2. *\/$/;"	m	struct:otri	file:
+orient3d	triangle.cpp	/^float orient3d(struct mesh *m, struct behavior *b,$/;"	f
+orient3dadapt	triangle.cpp	/^float orient3dadapt(vertex pa, vertex pb, vertex pc, vertex pd,$/;"	f
+orient3dcount	triangle.cpp	/^  long orient3dcount;           \/* Number of 3D orientation tests performed. *\/$/;"	m	struct:mesh	file:
+osub	triangle.cpp	/^struct osub {$/;"	s	file:
+otri	triangle.cpp	/^struct otri {$/;"	s	file:
+otricopy	triangle.cpp	981;"	d	file:
+otriequal	triangle.cpp	987;"	d	file:
+pGlbSupportpoint	clelas.h	/^  std::vector<support_pt> pGlbSupportpoint;$/;"	m	class:clElas
+pGlbSupportpoint	elas.h	/^  std::vector<support_pt> pGlbSupportpoint;$/;"	m	class:Elas
+pack_16bit_to_8bit_saturate	filter.cpp	/^    void pack_16bit_to_8bit_saturate( const __m128i a0, const __m128i a1, __m128i& b ) {$/;"	f	namespace:filter::detail
+param	clelas.h	/^  parameters param;$/;"	m	class:clElas
+param	elas.h	/^  parameters param;$/;"	m	class:Elas
+parameters	clelas.h	/^	parameters (setting s=ROBOTICS) {$/;"	f	struct:clElas::parameters
+parameters	clelas.h	/^  struct parameters {$/;"	s	class:clElas
+parameters	elas.h	/^	parameters (setting s=ROBOTICS) {$/;"	f	struct:Elas::parameters
+parameters	elas.h	/^  struct parameters {$/;"	s	class:Elas
+parsecommandline	triangle.cpp	/^void parsecommandline(int argc, char **argv, struct behavior *b) {$/;"	f
+pathblock	triangle.cpp	/^  int **pathblock;$/;"	m	struct:memorypool	file:
+pathitem	triangle.cpp	/^  int *pathitem;$/;"	m	struct:memorypool	file:
+pathitemsleft	triangle.cpp	/^  int pathitemsleft;$/;"	m	struct:memorypool	file:
+plague	triangle.cpp	/^void plague(struct mesh *m, struct behavior *b)$/;"	f
+plus1mod3	triangle.cpp	/^int plus1mod3[3] = {1, 2, 0};$/;"	v
+pnm_error	imageelas.h	/^class pnm_error {};$/;"	c
+pnm_read	imageelas.h	/^void pnm_read(std::ifstream &file, char *buf) {$/;"	f
+pointattributelist	triangle.h	/^  float *pointattributelist;                                      \/* In \/ out *\/$/;"	m	struct:triangulateio
+pointlist	triangle.h	/^  float *pointlist;                                               \/* In \/ out *\/$/;"	m	struct:triangulateio
+pointmarkerlist	triangle.h	/^  int *pointmarkerlist;                                          \/* In \/ out *\/$/;"	m	struct:triangulateio
+poly	triangle.cpp	/^  int poly, refine, quality, vararea, fixedarea, usertest;$/;"	m	struct:behavior	file:
+poolalloc	triangle.cpp	/^int *poolalloc(struct memorypool *pool)$/;"	f
+pooldealloc	triangle.cpp	/^void pooldealloc(struct memorypool *pool, int *dyingitem)$/;"	f
+pooldeinit	triangle.cpp	/^void pooldeinit(struct memorypool *pool)$/;"	f
+poolinit	triangle.cpp	/^void poolinit(struct memorypool *pool, int bytecount, int itemcount,$/;"	f
+poolrestart	triangle.cpp	/^void poolrestart(struct memorypool *pool)$/;"	f
+poolzero	triangle.cpp	/^void poolzero(struct memorypool *pool)$/;"	f
+poortri	triangle.cpp	/^  triangle poortri;                       \/* A skinny or too-large triangle. *\/$/;"	m	struct:badtriang	file:
+postprocess_only_left	clelas.h	/^    bool    postprocess_only_left;  \/\/ saves time by not postprocessing the right image$/;"	m	struct:clElas::parameters
+postprocess_only_left	elas.h	/^    bool    postprocess_only_left;  \/\/ saves time by not postprocessing the right image$/;"	m	struct:Elas::parameters
+preciselocate	triangle.cpp	/^enum locateresult preciselocate(struct mesh *m, struct behavior *b,$/;"	f
+prevflip	triangle.cpp	/^  struct flipstacker *prevflip;               \/* Previous flip in the stack. *\/$/;"	m	struct:flipstacker	typeref:struct:flipstacker::flipstacker	file:
+printsubseg	triangle.cpp	/^void printsubseg(struct mesh *m, struct behavior *b, struct osub *s)$/;"	f
+printtriangle	triangle.cpp	/^void printtriangle(struct mesh *m, struct behavior *b, struct otri *t)$/;"	f
+process	clelas.cpp	/^void clElas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t* dims)$/;"	f	class:clElas
+process	elas.cpp	/^void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t* dims)$/;"	f	class:Elas
+program	clelas.h	/^  cl_program program ;$/;"	m	class:clElas
+pythag	matrix.cpp	/^FLOAT Matrix::pythag(FLOAT a,FLOAT b) {$/;"	f	class:Matrix
+quality	triangle.cpp	/^  int poly, refine, quality, vararea, fixedarea, usertest;$/;"	m	struct:behavior	file:
+quality_statistics	triangle.cpp	/^void quality_statistics(struct mesh *m, struct behavior *b)$/;"	f
+queuefront	triangle.cpp	/^  struct badtriang *queuefront[4096];$/;"	m	struct:mesh	typeref:struct:mesh::badtriang	file:
+queuetail	triangle.cpp	/^  struct badtriang *queuetail[4096];$/;"	m	struct:mesh	typeref:struct:mesh::badtriang	file:
+quiet	triangle.cpp	/^  int quiet, verbose;$/;"	m	struct:behavior	file:
+r	imageelas.h	/^typedef struct { uchar r, g, b; } rgb;$/;"	m	struct:__anon1
+randomnation	triangle.cpp	/^unsigned long long randomnation(unsigned int choices)$/;"	f
+randomseed	triangle.cpp	/^unsigned long long randomseed;                     \/* Current random number seed. *\/$/;"	v
+rchild	triangle.cpp	/^  struct splaynode *lchild, *rchild;              \/* Children in splay tree. *\/$/;"	m	struct:splaynode	typeref:struct:splaynode::	file:
+readnodefile	triangle.cpp	/^  int readnodefile;                           \/* Has a .node file been read? *\/$/;"	m	struct:mesh	file:
+recenttri	triangle.cpp	/^  struct otri recenttri;$/;"	m	struct:mesh	typeref:struct:mesh::otri	file:
+refine	triangle.cpp	/^  int poly, refine, quality, vararea, fixedarea, usertest;$/;"	m	struct:behavior	file:
+regionattrib	triangle.cpp	/^  int regionattrib, convex, weighted, jettison;$/;"	m	struct:behavior	file:
+regionlist	triangle.h	/^  float *regionlist;                      \/* In \/ pointer to array copied out *\/$/;"	m	struct:triangulateio
+regionplague	triangle.cpp	/^void regionplague(struct mesh *m, struct behavior *b,$/;"	f
+regions	triangle.cpp	/^  int regions;                                   \/* Number of input regions. *\/$/;"	m	struct:mesh	file:
+releaseMemory	matrix.cpp	/^void Matrix::releaseMemory () {$/;"	f	class:Matrix
+removeInconsistentSupportPoints	clelas.cpp	/^void clElas::removeInconsistentSupportPoints (int16_t* D_can,int32_t D_can_width,int32_t D_can_height) {$/;"	f	class:clElas
+removeInconsistentSupportPoints	elas.cpp	/^void Elas::removeInconsistentSupportPoints (int16_t* D_can,int32_t D_can_width,int32_t D_can_height) {$/;"	f	class:Elas
+removeRedundantSupportPoints	clelas.cpp	/^void clElas::removeRedundantSupportPoints(int16_t* D_can,int32_t D_can_width,int32_t D_can_height,$/;"	f	class:clElas
+removeRedundantSupportPoints	elas.cpp	/^void Elas::removeRedundantSupportPoints(int16_t* D_can,int32_t D_can_width,int32_t D_can_height,$/;"	f	class:Elas
+removeSmallSegments	clelas.cpp	/^void clElas::removeSmallSegments (float* D) {$/;"	f	class:clElas
+removeSmallSegments	elas.cpp	/^void Elas::removeSmallSegments (float* D) {$/;"	f	class:Elas
+removeghosts	triangle.cpp	/^long removeghosts(struct mesh *m, struct behavior *b, struct otri *startghost)$/;"	f
+reshape	matrix.cpp	/^Matrix Matrix::reshape(const Matrix &M,int32_t m_,int32_t n_) {$/;"	f	class:Matrix
+resulterrbound	triangle.cpp	/^float resulterrbound;$/;"	v
+rgb	imageelas.h	/^typedef struct { uchar r, g, b; } rgb;$/;"	t	typeref:struct:__anon1
+rnext	triangle.cpp	920;"	d	file:
+rnextself	triangle.cpp	925;"	d	file:
+rotMatX	matrix.cpp	/^Matrix Matrix::rotMatX (const FLOAT &angle) {$/;"	f	class:Matrix
+rotMatY	matrix.cpp	/^Matrix Matrix::rotMatY (const FLOAT &angle) {$/;"	f	class:Matrix
+rotMatZ	matrix.cpp	/^Matrix Matrix::rotMatZ (const FLOAT &angle) {$/;"	f	class:Matrix
+rprev	triangle.cpp	934;"	d	file:
+rprevself	triangle.cpp	939;"	d	file:
+samples	triangle.cpp	/^  long samples;              \/* Number of random samples for point location. *\/$/;"	m	struct:mesh	file:
+samples	vibe.cpp	/^float samples[1024][1024][defaultNbSamples+1];\/\/保存每个像素点的样本值$/;"	v
+savePGM	imageelas.h	/^void savePGM(imageelas<uchar> *im, const char *name) {$/;"	f
+sbond	triangle.cpp	1123;"	d	file:
+scale_expansion_zeroelim	triangle.cpp	/^int scale_expansion_zeroelim(int elen, float *e, float b, float *h)$/;"	f
+scoutsegment	triangle.cpp	/^int scoutsegment(struct mesh *m, struct behavior *b, struct otri *searchtri,$/;"	f
+sdecode	triangle.cpp	1042;"	d	file:
+sdest	triangle.cpp	1091;"	d	file:
+sdissolve	triangle.cpp	1130;"	d	file:
+segdest	triangle.cpp	1103;"	d	file:
+segmentintersection	triangle.cpp	/^void segmentintersection(struct mesh *m, struct behavior *b,$/;"	f
+segmentlist	triangle.h	/^  int *segmentlist;                                              \/* In \/ out *\/$/;"	m	struct:triangulateio
+segmentmarkerlist	triangle.h	/^  int *segmentmarkerlist;                                        \/* In \/ out *\/$/;"	m	struct:triangulateio
+segorg	triangle.cpp	1100;"	d	file:
+sencode	triangle.cpp	1051;"	d	file:
+setDiag	matrix.cpp	/^void Matrix::setDiag(FLOAT s,int32_t i1,int32_t i2) {$/;"	f	class:Matrix
+setMat	matrix.cpp	/^void Matrix::setMat(const Matrix &M,const int32_t i1,const int32_t j1) {$/;"	f	class:Matrix
+setVal	matrix.cpp	/^void Matrix::setVal(FLOAT s,int32_t i1,int32_t j1,int32_t i2,int32_t j2) {$/;"	f	class:Matrix
+setapex	triangle.cpp	962;"	d	file:
+setareabound	triangle.cpp	1019;"	d	file:
+setdest	triangle.cpp	959;"	d	file:
+setelemattribute	triangle.cpp	1012;"	d	file:
+setmark	triangle.cpp	1118;"	d	file:
+setorg	triangle.cpp	956;"	d	file:
+setsdest	triangle.cpp	1097;"	d	file:
+setsegdest	triangle.cpp	1109;"	d	file:
+setsegorg	triangle.cpp	1106;"	d	file:
+setsorg	triangle.cpp	1094;"	d	file:
+setting	clelas.h	/^  enum setting {ROBOTICS,MIDDLEBURY};$/;"	g	class:clElas
+setting	elas.h	/^  enum setting {ROBOTICS,MIDDLEBURY};$/;"	g	class:Elas
+setvertex2tri	triangle.cpp	1205;"	d	file:
+setvertexmark	triangle.cpp	1195;"	d	file:
+setvertextype	triangle.cpp	1200;"	d	file:
+sigma	clelas.h	/^    float   sigma;                  \/\/ prior sigma$/;"	m	struct:clElas::parameters
+sigma	elas.h	/^    float   sigma;                  \/\/ prior sigma$/;"	m	struct:Elas::parameters
+snext	triangle.cpp	1077;"	d	file:
+snextself	triangle.cpp	1081;"	d	file:
+sobel3x3	filter.cpp	/^  void sobel3x3( const uint8_t* in, uint8_t* out_v, uint8_t* out_h, int w, int h ) {$/;"	f	namespace:filter
+sobel5x5	filter.cpp	/^  void sobel5x5( const uint8_t* in, uint8_t* out_v, uint8_t* out_h, int w, int h ) {$/;"	f	namespace:filter
+solve	matrix.cpp	/^bool Matrix::solve (const Matrix &M, FLOAT eps) {$/;"	f	class:Matrix
+sorg	triangle.cpp	1088;"	d	file:
+speckle_sim_threshold	clelas.h	/^    float   speckle_sim_threshold;  \/\/ similarity threshold for speckle segmentation$/;"	m	struct:clElas::parameters
+speckle_sim_threshold	elas.h	/^    float   speckle_sim_threshold;  \/\/ similarity threshold for speckle segmentation$/;"	m	struct:Elas::parameters
+speckle_size	clelas.h	/^    int32_t speckle_size;           \/\/ maximal size of a speckle (small speckles get removed)  $/;"	m	struct:clElas::parameters
+speckle_size	elas.h	/^    int32_t speckle_size;           \/\/ maximal size of a speckle (small speckles get removed)  $/;"	m	struct:Elas::parameters
+spivot	triangle.cpp	1066;"	d	file:
+spivotself	triangle.cpp	1070;"	d	file:
+splaynode	triangle.cpp	/^struct splaynode {$/;"	s	file:
+splaynodes	triangle.cpp	/^  struct memorypool splaynodes;$/;"	m	struct:mesh	typeref:struct:mesh::memorypool	file:
+splitseg	triangle.cpp	/^  int splitseg;$/;"	m	struct:behavior	file:
+splitter	triangle.cpp	/^float splitter;       \/* Used to split float factors for exact multiplication. *\/$/;"	v
+sqrarg	matrix.cpp	/^static FLOAT sqrarg;$/;"	v	file:
+sradius	clelas.h	/^    float   sradius;                \/\/ prior sigma radius$/;"	m	struct:clElas::parameters
+sradius	elas.h	/^    float   sradius;                \/\/ prior sigma radius$/;"	m	struct:Elas::parameters
+ss	triangle.cpp	/^  subseg *ss;$/;"	m	struct:osub	file:
+ssorient	triangle.cpp	/^  int ssorient;                                       \/* Ranges from 0 to 1. *\/$/;"	m	struct:osub	file:
+ssym	triangle.cpp	1056;"	d	file:
+ssymself	triangle.cpp	1060;"	d	file:
+statistics	triangle.cpp	/^void statistics(struct mesh *m, struct behavior *b)$/;"	f
+stdissolve	triangle.cpp	1186;"	d	file:
+steiner	triangle.cpp	/^  int steiner;$/;"	m	struct:behavior	file:
+steinerleft	triangle.cpp	/^  int steinerleft;                 \/* Number of Steiner points not yet used. *\/$/;"	m	struct:mesh	file:
+stpivot	triangle.cpp	1169;"	d	file:
+subsampling	clelas.h	/^    bool    subsampling;            \/\/ saves time by only computing disparities for each 2nd pixel$/;"	m	struct:clElas::parameters
+subsampling	elas.h	/^    bool    subsampling;            \/\/ saves time by only computing disparities for each 2nd pixel$/;"	m	struct:Elas::parameters
+subseg	triangle.cpp	/^typedef float **subseg;                  \/* Really:  typedef subseg *subseg   *\/$/;"	t	file:
+subsegcopy	triangle.cpp	1135;"	d	file:
+subsegdealloc	triangle.cpp	/^void subsegdealloc(struct mesh *m, subseg *dyingsubseg)$/;"	f
+subsegdest	triangle.cpp	/^  vertex subsegorg, subsegdest;                         \/* Its two vertices. *\/$/;"	m	struct:badsubseg	file:
+subsegequal	triangle.cpp	1141;"	d	file:
+subsegorg	triangle.cpp	/^  vertex subsegorg, subsegdest;                         \/* Its two vertices. *\/$/;"	m	struct:badsubseg	file:
+subsegs	triangle.cpp	/^  struct memorypool subsegs;$/;"	m	struct:mesh	typeref:struct:mesh::memorypool	file:
+subsegtraverse	triangle.cpp	/^subseg *subsegtraverse(struct mesh *m)$/;"	f
+support_pt	clelas.h	/^    support_pt(int32_t u,int32_t v,int32_t d):u(u),v(v),d(d){}$/;"	f	struct:clElas::support_pt
+support_pt	clelas.h	/^  struct support_pt {$/;"	s	class:clElas
+support_pt	elas.h	/^    support_pt(int32_t u,int32_t v,int32_t d):u(u),v(v),d(d){}$/;"	f	struct:Elas::support_pt
+support_pt	elas.h	/^  struct support_pt {$/;"	s	class:Elas
+support_texture	clelas.h	/^    int32_t support_texture;        \/\/ min texture for support points      最小纹理支持点$/;"	m	struct:clElas::parameters
+support_texture	elas.h	/^    int32_t support_texture;        \/\/ min texture for support points      最小纹理支持点$/;"	m	struct:Elas::parameters
+support_threshold	clelas.h	/^    float   support_threshold;      \/\/ max. uniqueness ratio (best vs. second best support match)  最大视差唯一性百分比$/;"	m	struct:clElas::parameters
+support_threshold	elas.h	/^    float   support_threshold;      \/\/ max. uniqueness ratio (best vs. second best support match)  最大视差唯一性百分比$/;"	m	struct:Elas::parameters
+svd	matrix.cpp	/^void Matrix::svd(Matrix &U2,Matrix &W,Matrix &V) {$/;"	f	class:Matrix
+sweepline	triangle.cpp	/^  int incremental, sweepline, dwyer;$/;"	m	struct:behavior	file:
+sym	triangle.cpp	842;"	d	file:
+symself	triangle.cpp	846;"	d	file:
+t1a	clelas.h	/^    float   t1a,t1b,t1c;$/;"	m	struct:clElas::triangle
+t1a	elas.h	/^    float   t1a,t1b,t1c;$/;"	m	struct:Elas::triangle
+t1b	clelas.h	/^    float   t1a,t1b,t1c;$/;"	m	struct:clElas::triangle
+t1b	elas.h	/^    float   t1a,t1b,t1c;$/;"	m	struct:Elas::triangle
+t1c	clelas.h	/^    float   t1a,t1b,t1c;$/;"	m	struct:clElas::triangle
+t1c	elas.h	/^    float   t1a,t1b,t1c;$/;"	m	struct:Elas::triangle
+t2a	clelas.h	/^    float   t2a,t2b,t2c;$/;"	m	struct:clElas::triangle
+t2a	elas.h	/^    float   t2a,t2b,t2c;$/;"	m	struct:Elas::triangle
+t2b	clelas.h	/^    float   t2a,t2b,t2c;$/;"	m	struct:clElas::triangle
+t2b	elas.h	/^    float   t2a,t2b,t2c;$/;"	m	struct:Elas::triangle
+t2c	clelas.h	/^    float   t2a,t2b,t2c;$/;"	m	struct:clElas::triangle
+t2c	elas.h	/^    float   t2a,t2b,t2c;$/;"	m	struct:Elas::triangle
+timer	clelas.h	/^  Timer timer;$/;"	m	class:clElas
+timer	elas.h	/^  Timer timer;$/;"	m	class:Elas
+transfernodes	triangle.cpp	/^void transfernodes(struct mesh *m, struct behavior *b, float *pointlist,$/;"	f
+traversalinit	triangle.cpp	/^void traversalinit(struct memorypool *pool)$/;"	f
+traverse	triangle.cpp	/^int *traverse(struct memorypool *pool)$/;"	f
+tri	triangle.cpp	/^  triangle *tri;$/;"	m	struct:otri	file:
+triangapex	triangle.cpp	/^  vertex triangorg, triangdest, triangapex;           \/* Its three vertices. *\/$/;"	m	struct:badtriang	file:
+triangdest	triangle.cpp	/^  vertex triangorg, triangdest, triangapex;           \/* Its three vertices. *\/$/;"	m	struct:badtriang	file:
+triangle	clelas.h	/^    triangle(int32_t c1,int32_t c2,int32_t c3):c1(c1),c2(c2),c3(c3){}$/;"	f	struct:clElas::triangle
+triangle	clelas.h	/^  struct triangle {$/;"	s	class:clElas
+triangle	elas.h	/^    triangle(int32_t c1,int32_t c2,int32_t c3):c1(c1),c2(c2),c3(c3){}$/;"	f	struct:Elas::triangle
+triangle	elas.h	/^  struct triangle {$/;"	s	class:Elas
+triangle	triangle.cpp	/^typedef float **triangle;            \/* Really:  typedef triangle *triangle   *\/$/;"	t	file:
+trianglearealist	triangle.h	/^  float *trianglearealist;                                         \/* In only *\/$/;"	m	struct:triangulateio
+triangleattributelist	triangle.h	/^  float *triangleattributelist;                                   \/* In \/ out *\/$/;"	m	struct:triangulateio
+triangledealloc	triangle.cpp	/^void triangledealloc(struct mesh *m, triangle *dyingtriangle)$/;"	f
+triangledeinit	triangle.cpp	/^void triangledeinit(struct mesh *m, struct behavior *b)$/;"	f
+triangleinit	triangle.cpp	/^void triangleinit(struct mesh *m)$/;"	f
+trianglelist	triangle.h	/^  int *trianglelist;                                             \/* In \/ out *\/$/;"	m	struct:triangulateio
+triangles	triangle.cpp	/^  struct memorypool triangles;$/;"	m	struct:mesh	typeref:struct:mesh::memorypool	file:
+triangletraverse	triangle.cpp	/^triangle *triangletraverse(struct mesh *m)$/;"	f
+triangorg	triangle.cpp	/^  vertex triangorg, triangdest, triangapex;           \/* Its three vertices. *\/$/;"	m	struct:badtriang	file:
+triangulate	triangle.cpp	/^void triangulate(char *triswitches, struct triangulateio *in,$/;"	f
+triangulateio	triangle.h	/^struct triangulateio {$/;"	s
+triangulatepolygon	triangle.cpp	/^void triangulatepolygon(struct mesh *m, struct behavior *b,$/;"	f
+triexit	triangle.cpp	/^void triexit(int status)$/;"	f
+trifree	triangle.cpp	/^void trifree(int *memptr)$/;"	f
+trimalloc	triangle.cpp	/^int *trimalloc(int size)$/;"	f
+tsbond	triangle.cpp	1175;"	d	file:
+tsdissolve	triangle.cpp	1181;"	d	file:
+tspivot	triangle.cpp	1162;"	d	file:
+u	clelas.h	/^    int32_t u;$/;"	m	struct:clElas::support_pt
+u	elas.h	/^    int32_t u;$/;"	m	struct:Elas::support_pt
+uchar	imageelas.h	/^typedef unsigned char uchar;$/;"	t
+uint16_t	clelas.h	/^  typedef unsigned __int16  uint16_t;$/;"	t
+uint16_t	descriptor.h	/^  typedef unsigned __int16  uint16_t;$/;"	t
+uint16_t	elas.h	/^  typedef unsigned __int16  uint16_t;$/;"	t
+uint16_t	filter.cpp	/^  typedef unsigned __int16  uint16_t;$/;"	t	file:
+uint16_t	filter.h	/^  typedef unsigned __int16  uint16_t;$/;"	t
+uint16_t	matrix.h	/^  typedef unsigned __int16  uint16_t;$/;"	t
+uint32_t	clelas.h	/^  typedef unsigned __int32  uint32_t;$/;"	t
+uint32_t	descriptor.h	/^  typedef unsigned __int32  uint32_t;$/;"	t
+uint32_t	elas.h	/^  typedef unsigned __int32  uint32_t;$/;"	t
+uint32_t	filter.cpp	/^  typedef unsigned __int32  uint32_t;$/;"	t	file:
+uint32_t	filter.h	/^  typedef unsigned __int32  uint32_t;$/;"	t
+uint32_t	matrix.h	/^  typedef unsigned __int32  uint32_t;$/;"	t
+uint64_t	clelas.h	/^  typedef unsigned __int64  uint64_t;$/;"	t
+uint64_t	descriptor.h	/^  typedef unsigned __int64  uint64_t;$/;"	t
+uint64_t	elas.h	/^  typedef unsigned __int64  uint64_t;$/;"	t
+uint64_t	filter.cpp	/^  typedef unsigned __int64  uint64_t;$/;"	t	file:
+uint64_t	filter.h	/^  typedef unsigned __int64  uint64_t;$/;"	t
+uint64_t	matrix.h	/^  typedef unsigned __int64  uint64_t;$/;"	t
+uint8_t	clelas.h	/^  typedef unsigned __int8   uint8_t;$/;"	t
+uint8_t	descriptor.h	/^  typedef unsigned __int8   uint8_t;$/;"	t
+uint8_t	elas.h	/^  typedef unsigned __int8   uint8_t;$/;"	t
+uint8_t	filter.cpp	/^  typedef unsigned __int8   uint8_t;$/;"	t	file:
+uint8_t	filter.h	/^  typedef unsigned __int8   uint8_t;$/;"	t
+uint8_t	matrix.h	/^  typedef unsigned __int8   uint8_t;$/;"	t
+unallocateditems	triangle.cpp	/^  int unallocateditems;$/;"	m	struct:memorypool	file:
+undeads	triangle.cpp	/^  int undeads;    \/* Number of input vertices that don't appear in the mesh. *\/$/;"	m	struct:mesh	file:
+unflip	triangle.cpp	/^void unflip(struct mesh *m, struct behavior *b, struct otri *flipedge)$/;"	f
+uninfect	triangle.cpp	998;"	d	file:
+unpack_8bit_to_16bit	filter.cpp	/^    void unpack_8bit_to_16bit( const __m128i a, __m128i& b0, __m128i& b1 ) {$/;"	f	namespace:filter::detail
+update	vibe.cpp	/^void update(CvMat* pFrameMat,CvMat* segMat,RNG rng,int nFrmNum,bool pixel[],bool pixelnext[])$/;"	f
+updatePosteriorMinimum	clelas.cpp	/^inline void clElas::updatePosteriorMinimum(__m128i* I2_block_addr,const int32_t &d,$/;"	f	class:clElas
+updatePosteriorMinimum	clelas.cpp	/^inline void clElas::updatePosteriorMinimum(__m128i* I2_block_addr,const int32_t &d,const int32_t &w,$/;"	f	class:clElas
+updatePosteriorMinimum	elas.cpp	/^inline void Elas::updatePosteriorMinimum(__m128i* I2_block_addr,const int32_t &d,$/;"	f	class:Elas
+updatePosteriorMinimum	elas.cpp	/^inline void Elas::updatePosteriorMinimum(__m128i* I2_block_addr,const int32_t &d,const int32_t &w,$/;"	f	class:Elas
+usertest	triangle.cpp	/^  int poly, refine, quality, vararea, fixedarea, usertest;$/;"	m	struct:behavior	file:
+usesegments	triangle.cpp	/^  int usesegments;$/;"	m	struct:behavior	file:
+v	clelas.h	/^    int32_t v;$/;"	m	struct:clElas::support_pt
+v	elas.h	/^    int32_t v;$/;"	m	struct:Elas::support_pt
+val	matrix.h	/^  FLOAT   **val;$/;"	m	class:Matrix
+vararea	triangle.cpp	/^  int poly, refine, quality, vararea, fixedarea, usertest;$/;"	m	struct:behavior	file:
+verbose	triangle.cpp	/^  int quiet, verbose;$/;"	m	struct:behavior	file:
+vertex	triangle.cpp	/^typedef float *vertex;$/;"	t	file:
+vertex2tri	triangle.cpp	1203;"	d	file:
+vertex2triindex	triangle.cpp	/^  int vertex2triindex;     \/* Index to find a triangle adjacent to a vertex. *\/$/;"	m	struct:mesh	file:
+vertexdealloc	triangle.cpp	/^void vertexdealloc(struct mesh *m, vertex dyingvertex)$/;"	f
+vertexmark	triangle.cpp	1193;"	d	file:
+vertexmarkindex	triangle.cpp	/^  int vertexmarkindex;         \/* Index to find boundary marker of a vertex. *\/$/;"	m	struct:mesh	file:
+vertexmedian	triangle.cpp	/^void vertexmedian(vertex *sortarray, int arraysize, int median, int axis)$/;"	f
+vertexsort	triangle.cpp	/^void vertexsort(vertex *sortarray, int arraysize)$/;"	f
+vertextraverse	triangle.cpp	/^vertex vertextraverse(struct mesh *m)$/;"	f
+vertextype	triangle.cpp	1198;"	d	file:
+vertices	triangle.cpp	/^  struct memorypool vertices;$/;"	m	struct:mesh	typeref:struct:mesh::memorypool	file:
+viri	triangle.cpp	/^  struct memorypool viri;$/;"	m	struct:mesh	typeref:struct:mesh::memorypool	file:
+voronoi	triangle.cpp	/^  int edgesout, voronoi, neighbors, geomview;$/;"	m	struct:behavior	file:
+w	imageelas.h	/^  int w, h;$/;"	m	class:imageelas
+weighted	triangle.cpp	/^  int regionattrib, convex, weighted, jettison;$/;"	m	struct:behavior	file:
+width	clelas.h	/^  int32_t width,height,bpl;$/;"	m	class:clElas
+width	elas.h	/^  int32_t width,height,bpl;$/;"	m	class:Elas
+width	imageelas.h	/^  int width() const { return w; }$/;"	f	class:imageelas
+writeedges	triangle.cpp	/^void writeedges(struct mesh *m, struct behavior *b,$/;"	f
+writeelements	triangle.cpp	/^void writeelements(struct mesh *m, struct behavior *b,$/;"	f
+writeneighbors	triangle.cpp	/^void writeneighbors(struct mesh *m, struct behavior *b, int **neighborlist)$/;"	f
+writenodes	triangle.cpp	/^void writenodes(struct mesh *m, struct behavior *b, float **pointlist,$/;"	f
+writepoly	triangle.cpp	/^void writepoly(struct mesh *m, struct behavior *b,$/;"	f
+writevoronoi	triangle.cpp	/^void writevoronoi(struct mesh *m, struct behavior *b, float **vpointlist,$/;"	f
+xkey	triangle.cpp	/^  float xkey, ykey;                              \/* Coordinates of the event. *\/$/;"	m	struct:event	file:
+xmax	triangle.cpp	/^  float xmin, xmax, ymin, ymax;                            \/* x and y bounds. *\/$/;"	m	struct:mesh	file:
+xmin	triangle.cpp	/^  float xmin, xmax, ymin, ymax;                            \/* x and y bounds. *\/$/;"	m	struct:mesh	file:
+xminextreme	triangle.cpp	/^  float xminextreme;      \/* Nonexistent x value used as a flag in sweepline. *\/$/;"	m	struct:mesh	file:
+ykey	triangle.cpp	/^  float xkey, ykey;                              \/* Coordinates of the event. *\/$/;"	m	struct:event	file:
+ymax	triangle.cpp	/^  float xmin, xmax, ymin, ymax;                            \/* x and y bounds. *\/$/;"	m	struct:mesh	file:
+ymin	triangle.cpp	/^  float xmin, xmax, ymin, ymax;                            \/* x and y bounds. *\/$/;"	m	struct:mesh	file:
+zero	matrix.cpp	/^void Matrix::zero() {$/;"	f	class:Matrix
+~Descriptor	descriptor.cpp	/^Descriptor::~Descriptor() {$/;"	f	class:Descriptor
+~Elas	elas.h	/^  ~Elas () {}  $/;"	f	class:Elas
+~Matrix	matrix.cpp	/^Matrix::~Matrix () {$/;"	f	class:Matrix
+~clElas	clelas.h	/^  ~clElas () {}  $/;"	f	class:clElas
+~imageelas	imageelas.h	/^template <class T> imageelas<T>::~imageelas() {$/;"	f	class:imageelas

@@ -1,0 +1,83 @@
+﻿生成启动时间为 2016/5/31 19:10:44。
+     1>项目“D:\videoProcess\sobelandmatch\sobelandmatch\sobelandmatch.vcxproj”在节点 2 上(Build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Debug\sobelandmatch.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         D:\pro\VisualStudio2012\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\sobelandmatch.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         D:\pro\VisualStudio2012\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\sobelandmatch.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt cl_user.cpp clelas.cpp descriptor.cpp elas.cpp filter.cpp main.cpp matrix.cpp triangle.cpp vibe.cpp
+         vibe.cpp
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\vibe.h(2): fatal error C1083: 无法打开包括文件:“opencv2/opencv.hpp”: No such file or directory
+         triangle.cpp
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(1358): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(1362): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(1264): warning C4101: “k”: 未引用的局部变量
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(1265): warning C4101: “workstring”: 未引用的局部变量
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2434): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2438): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2439): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2440): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2441): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2442): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2443): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2444): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2445): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2446): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2447): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2894): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2927): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2946): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2965): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(2984): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3003): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3022): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3070): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3097): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3112): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3124): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3167): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3194): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3209): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3221): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3264): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3291): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3306): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3318): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3934): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3939): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3954): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3955): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3965): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3966): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3977): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3979): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3998): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(3999): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(5209): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(5220): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(7594): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(8216): warning C4305: “=”: 从“double”到“float”截断
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(8217): warning C4305: “=”: 从“double”到“float”截断
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\triangle.cpp(8345): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+         matrix.cpp
+         main.cpp
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\main.cpp(2): fatal error C1083: 无法打开包括文件:“cv.h”: No such file or directory
+         filter.cpp
+         elas.cpp
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\elas.h(73): warning C4305: “=”: 从“double”到“float”截断
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\elas.h(81): warning C4305: “=”: 从“double”到“float”截断
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\elas.h(102): warning C4305: “=”: 从“double”到“float”截断
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\elas.h(110): warning C4305: “=”: 从“double”到“float”截断
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\elas.cpp(10): fatal error C1083: 无法打开包括文件:“CL/cl.h”: No such file or directory
+         descriptor.cpp
+         clelas.cpp
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\clelas.h(11): fatal error C1083: 无法打开包括文件:“CL/cl.h”: No such file or directory
+         cl_user.cpp
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\cl_user.cpp(2): fatal error C1083: 无法打开包括文件:“cv.h”: No such file or directory
+         正在生成代码...
+     1>d:\videoprocess\sobelandmatch\sobelandmatch\matrix.cpp(392): warning C4715: “Matrix::det”: 不是所有的控件路径都返回值
+     1>已完成生成项目“D:\videoProcess\sobelandmatch\sobelandmatch\sobelandmatch.vcxproj”(Build 个目标)的操作 - 失败。
+
+生成失败。
+
+已用时间 00:00:05.49
