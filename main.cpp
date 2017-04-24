@@ -36,10 +36,13 @@ extern void initCudaMalloc();
 int main(int argc, char** argv)
 {
 
+    int32_t D_can_width = 60;  //[15,310] => 60
+    int32_t D_can_height = 48; //[5, 230] => 46
 
     Elas::parameters param;//Æ¥Åä²ÎÊý
     param.postprocess_only_left = true;
-    Elas elas(param);
+//    Elas elas(param);
+    Elas elas(param, (int32_t)WIDTH, (int32_t)HEIGH, D_can_width, D_can_height );
 
 //    initCudaMalloc();
 //    printf("initcudamalloc over\n");
@@ -102,7 +105,7 @@ int main(int argc, char** argv)
             I2 = (uint8_t*)img2->imageData;
 
             gettimeofday(&start, NULL);
-            elas.process(I1, I2, D1_data_g, D2_data_g, dims);
+            elas.process(I1, I2, elas.D1_data_g, elas.D2_data_g, dims);
             gettimeofday(&end, NULL);
             double timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
             printf("elas process use : %fms\n", timeuse/1000);
@@ -112,7 +115,9 @@ int main(int argc, char** argv)
 
             for (int32_t i=0; i<WIDTH*HEIGH; i++)
             {
-                img1f->imageData[i] = (uint8_t)max(255.0*(D1_data[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
+//                img1f->imageData[i] = (uint8_t)max(255.0*(D1_data[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
+                img1f->imageData[i] = (uint8_t)max(255.0*(elas.D1_data_c[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
+
             }
             cvShowImage("capture_dis1",img1f);
 
@@ -130,7 +135,65 @@ int main(int argc, char** argv)
             applyColorMap(imgMat, imgColor, COLORMAP_JET);
             imshow("capture_dis", imgColor);
 //             cvShowImage("capture_depth",img1f);
+//            cvSaveImage("aaa.jpg", imgColor);
+//            imwrite("aaa.jpg", imgColor);
              cvWaitKey();
+
+
+
+
+
+             img1 = cvLoadImage("left1.png",0);
+             img2 = cvLoadImage("right1.png",0);
+             I1 = (uint8_t*)img1->imageData;
+             I2 = (uint8_t*)img2->imageData;
+
+             gettimeofday(&start, NULL);
+             elas.process(I1, I2, elas.D1_data_g, elas.D2_data_g, dims);
+             gettimeofday(&end, NULL);
+             timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+             printf("elas process use : %fms\n", timeuse/1000);
+
+             cout<<"show picture" << endl;
+//             IplImage* img1f = cvCreateImage(cvSize(WIDTH, HEIGH), IPL_DEPTH_8U,1);
+
+             for (int32_t i=0; i<WIDTH*HEIGH; i++)
+             {
+ //                img1f->imageData[i] = (uint8_t)max(255.0*(D1_data[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
+                 img1f->imageData[i] = (uint8_t)max(255.0*(elas.D1_data_c[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
+
+             }
+             cvShowImage("capture_dis1",img1f);
+
+ //            cvSaveImage("dis1.png", img1f);
+
+
+             Mat imgMat2(img1f, 0);
+ //            Mat imgMat(img1, 0);
+             Mat imgColor2;
+//             double vmin, vmax, alpha;
+             minMaxLoc(imgMat2, &vmin, &vmax);
+             printf("min,max: %lf, %lf\n", vmin, vmax);
+             alpha = 255.0 / (vmax - vmin);
+             imgMat2.convertTo(imgMat2, CV_8U, alpha, -vmin*alpha);
+             applyColorMap(imgMat2, imgColor2, COLORMAP_JET);
+             imshow("capture_dis", imgColor2);
+ //             cvShowImage("capture_depth",img1f);
+ //            cvSaveImage("aaa.jpg", imgColor);
+ //            imwrite("aaa.jpg", imgColor);
+              cvWaitKey();
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

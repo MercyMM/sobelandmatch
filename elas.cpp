@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <math.h>
-#include "descriptor.h"
 #include "triangle.h"
 #include "matrix.h"
 #include <arm_neon.h>
@@ -30,12 +29,55 @@ struct triangle {
 };
 
 
-extern void* HostMal(int **p, long size);
+extern void* HostMal(void **p, long size);
 extern void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector<Elas::support_pt> &p_support, \
               vector<Elas::triangle> &tri_1, vector<Elas::triangle> &tri_2, \
-              float* D1, float* D2,uint8_t* I1, uint8_t* I2);
+              float* D1, float* D2,uint8_t* I1, uint8_t* I2, int8_t* P_g,\
+                          int8_t *tp1_g, int8_t* tp2_g, int8_t* tp1_c, int8_t* tp2_c);
 
-extern vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_desc2) ;
+//extern vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_desc2) ;
+extern vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I1_desc, uint8_t* I2_desc,\
+                                                 int8_t* D_sup_c, int8_t* D_sup_g);
+
+#define GRID_WIDTH      16
+#define GRID_HEIGH      12
+#define WIDTH           320
+#define HEIGH           240
+#define D_CAN_WIDTH     60
+#define D_CAN_HEIGH     48
+
+Elas::Elas(parameters param, int32_t width, int32_t height, int32_t D_can_width, int32_t D_can_height)
+:param(param),desc_1(width, height, width),\
+desc_2(width,height,width)
+{
+    printf("aa\n");
+    D_sup_g         = (int8_t*)HostMal((void**)&D_sup_c, D_can_width*D_can_height * sizeof(int8_t) );
+    for(int i = 0; i < D_can_width*D_can_height * sizeof(int8_t); i++){
+        *(D_sup_c + i) = -1;
+    }
+    D1_data_g       = (float*)HostMal((void**)&D1_data_c, width * height * sizeof(float));
+    D2_data_g       = (float*)HostMal((void**)&D2_data_c, width * height * sizeof(float));
+    memset(D1_data_c, -10, width * height * sizeof(float));
+    memset(D2_data_c, -10, width * height * sizeof(float));
+    disp_grid_1_g   = (int32_t*)HostMal((void**)&disp_grid_1_c,  65 * GRID_WIDTH * GRID_HEIGH * sizeof(int32_t));
+    disp_grid_2_g   = (int32_t*)HostMal((void**)&disp_grid_2_c,  65 * GRID_WIDTH * GRID_HEIGH * sizeof(int32_t));
+    memset(disp_grid_1_c, 0, 65 * GRID_WIDTH * GRID_HEIGH * sizeof(int32_t));
+    memset(disp_grid_2_c, 0, 65 * GRID_WIDTH * GRID_HEIGH * sizeof(int32_t));
+    tp1_g           = (int8_t*)HostMal((void**)&tp1_c, width * height * sizeof(int8_t) );
+    tp2_g           = (int8_t*)HostMal((void**)&tp2_c, width * height * sizeof(int8_t) );
+        memset(tp1_c, -1,  width * height * sizeof(int8_t));
+        memset(tp2_c, -1,  width * height * sizeof(int8_t));
+    P_g             = (int8_t*)HostMal((void**)&P_c, 64 * sizeof(int8_t));
+
+    int8_t temp[] = {-14,-9,-2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,64};
+    for(int i = 0 ; i < 64; i++){
+        P_c[i] = temp[i];
+    }
+}
+
+
+
+
 
 void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t* dims)
 {
@@ -46,27 +88,19 @@ void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t*
       width  = dims[0];
       height = dims[1];
       bpl    = width + 15-(width-1)%16;
-
+      double timeuse;
       I1 = I1_;
       I2 = I2_;
 
       gettimeofday(&start, NULL);
-      Descriptor desc1(width,height,bpl);
-      Descriptor desc2(width,height,bpl);
-      gettimeofday(&end, NULL);
-      double timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
-      cout << "desc init: " << timeuse/1000 << "ms" <<endl;
-
-      gettimeofday(&start, NULL);
-      desc1.compute(I1,width,height,bpl,param.subsampling);
-      desc2.compute(I2,width,height,bpl,param.subsampling);
+      desc_1.compute(I1,width,height,bpl,param.subsampling);
+      desc_2.compute(I2,width,height,bpl,param.subsampling);
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
       cout << "two desc: " << timeuse/1000 << "ms" <<endl;
 
       gettimeofday(&start, NULL);
-      vector<support_pt> p_support = computeSupportMatches_g(desc1.I_desc_g, desc2.I_desc_g);
-//      vector<support_pt> p_support = computeSupportMatches(desc1.I_desc, desc2.I_desc);
+      vector<support_pt> p_support = computeSupportMatches_g(desc_1.I_desc_g, desc_2.I_desc_g,  D_sup_c, D_sup_g);
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
       cout <<"computesuppportmatch: "<< timeuse/1000 << "ms. " ; cout << "support size: "<<p_support.size() <<endl;
@@ -94,37 +128,25 @@ void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t*
 
 
       // allocate memory for disparity grid
-      int32_t grid_width   = (int32_t)ceil((float)width/(float)param.grid_size);
-      int32_t grid_height  = (int32_t)ceil((float)height/(float)param.grid_size);
+      int32_t grid_width   = 16; //int32_t)ceil((float)width/(float)param.grid_size);
+      int32_t grid_height  = 12; //(int32_t)ceil((float)height/(float)param.grid_size);
       int32_t grid_dims[3] = {param.disp_max+2,grid_width,grid_height};
-      int32_t* disparity_grid_1 = (int32_t*)calloc((param.disp_max+2)*grid_height*grid_width,sizeof(int32_t));
-      int32_t* disparity_grid_2 = (int32_t*)calloc((param.disp_max+2)*grid_height*grid_width,sizeof(int32_t));
 
       gettimeofday(&start, NULL);
-      createGrid(p_support,disparity_grid_1,grid_dims,0);
-      createGrid(p_support,disparity_grid_2,grid_dims,1);
+      createGrid(p_support, disp_grid_1_c, grid_dims,0);
+      createGrid(p_support, disp_grid_2_c, grid_dims,1);
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
       cout <<"creategrid: "<< timeuse/1000 << "ms" <<endl;
 
 
       gettimeofday(&start, NULL);
-
-      cuda_computeD(disparity_grid_1, disparity_grid_2, p_support, tri_1,tri_2, D1, D2,\
-                    desc1.I_desc,desc2.I_desc );
+      cuda_computeD(disp_grid_1_g, disp_grid_1_g, p_support, tri_1, tri_2, D1, D2,\
+                    desc_1.I_desc_g, desc_2.I_desc_g, P_g, tp1_g, tp2_g, tp1_c, tp2_c );
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
       cout <<"cuda_computeD: "<< timeuse/1000 << "ms" <<endl;
 
-
-
-  // release memory
-//  free(disparity_grid_1);
-//  free(disparity_grid_2);
-//  _mm_free(I1);
-//  _mm_free(I2);
-//  free(I1);
-//  free(I2);
 }
 
 void Elas::removeInconsistentSupportPoints (int16_t* D_can,int32_t D_can_width,int32_t D_can_height) {

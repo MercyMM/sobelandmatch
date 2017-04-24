@@ -411,7 +411,7 @@ __device__ unsigned int computeMatchEnergy1_new(unsigned char* dst1_1, unsigned 
 
 
 
-__global__ void sptMathKernel(int32_t D_can_width, int32_t D_can_height, int16_t* D_can, uint8_t* desc1, uint8_t* desc2)
+__global__ void sptMathKernel(int32_t D_can_width, int32_t D_can_height, int8_t* D_can, uint8_t* desc1, uint8_t* desc2)
 {
     int32_t u_wrap;
     int disp_max_valid;
@@ -671,7 +671,8 @@ __global__ void removeRedundantSupportPoints1(int16_t* D_can, int32_t D_can_widt
 
 
 
-vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_desc2)
+vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_desc2, \
+                                                 int8_t* D_sup_c, int8_t* D_sup_g)
 {
 
     // create matrix for saving disparity candidates
@@ -706,8 +707,8 @@ vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_de
     cudaFuncSetCacheConfig(sptMathKernel,cudaFuncCachePreferShared);
 
     cudaDeviceSynchronize();
-    sptMathKernel << <grid, threads, 0, stream1>> > (D_can_width, D_can_height, D_can_gpu, I_desc1, I_desc2);
-
+//    sptMathKernel << <grid, threads, 0, stream1>> > (D_can_width, D_can_height, D_can_gpu, I_desc1, I_desc2);
+    sptMathKernel << <grid, threads, 0, stream1>> > (D_can_width, D_can_height, D_sup_g, I_desc1, I_desc2);
     cudaMemcpy(D_can_cpu, D_can_gpu, D_can_width*D_can_height * sizeof(int16_t), cudaMemcpyDeviceToHost);
 
 
@@ -720,13 +721,20 @@ vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_de
 //    cudaMemcpy(D_can_cpu, D_can_gpu, D_can_width*D_can_height * sizeof(int16_t), cudaMemcpyDeviceToHost);
 
     // move support points from image representation into a vector representation
+//    vector<Elas::support_pt> p_support;
+//    for (int32_t u_can = 0; u_can<D_can_width; u_can++)
+//        for (int32_t v_can = 0; v_can<D_can_height; v_can++)
+//            if (*(D_can_cpu + u_can + v_can * D_can_width) >= 0)
+//                p_support.push_back(Elas::support_pt((u_can + 3)*D_candidate_stepsize,
+//                    (v_can + 1) * D_candidate_stepsize,
+//                    *(D_can_cpu + u_can + v_can * D_can_width)));
     vector<Elas::support_pt> p_support;
     for (int32_t u_can = 0; u_can<D_can_width; u_can++)
         for (int32_t v_can = 0; v_can<D_can_height; v_can++)
-            if (*(D_can_cpu + u_can + v_can * D_can_width) >= 0)
+            if (*(D_sup_c + u_can + v_can * D_can_width) >= 0)
                 p_support.push_back(Elas::support_pt((u_can + 3)*D_candidate_stepsize,
                     (v_can + 1) * D_candidate_stepsize,
-                    *(D_can_cpu + u_can + v_can * D_can_width)));
+                    *(D_sup_c+ u_can + v_can * D_can_width)));
 
 
 //    if (param.add_corners)
@@ -743,10 +751,10 @@ vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_de
 
 __constant__ int32_t grid_dims_g[3] = {65, WIDTH/GRID_SIZE, HEIGH/GRID_SIZE} ;
 
-__global__ void Triangle_Match1(triangle1* tri, int32_t* disparity_grid,\
-                                uint8_t* I1_desc, uint8_t* I2_desc, int32_t* P, \
+__global__ void Triangle_Match1(Elas::triangle* tri, int32_t* disparity_grid,\
+                                uint8_t* I1_desc, uint8_t* I2_desc, int8_t* P, \
                                 int32_t plane_radius, bool right_image, float* D,  \
-                                int32_t* tp)
+                                int8_t* tp)
 
 {
 
@@ -772,7 +780,7 @@ __global__ void Triangle_Match1(triangle1* tri, int32_t* disparity_grid,\
     __syncthreads();
 
 
-    id = tp[2 * u + v * 2 * WIDTH + 1];
+    id = tp[u + v * WIDTH];
 
     plane_a = tri[id].t1a;
     plane_b = tri[id].t1b;
@@ -906,7 +914,7 @@ __global__ void Triangle_Match1(triangle1* tri, int32_t* disparity_grid,\
 
 //void computeTrianglePoints(support_pt1* p_support, triangle1* tri, bool right_image, int32_t width, int32_t TRI_SIZE, int32_t* tp) {
 void computeTrianglePoints(const vector<Elas::support_pt> &p_support, const vector<Elas::triangle> &tri, \
-                           bool right_image, int32_t width, int32_t TRI_SIZE, int32_t* tp) {
+                           bool right_image, int32_t width, int32_t TRI_SIZE, int8_t* tp) {
 
     // loop variables
     int32_t c1, c2, c3;
@@ -970,9 +978,10 @@ void computeTrianglePoints(const vector<Elas::support_pt> &p_support, const vect
                     for (int32_t v = min(v_1, v_2); v < max(v_1, v_2); v++)
                         if (!param.subsampling || v % 2 == 0)
                         {
-                            *((int16_t*)(tp + 2 * u + v * 2 * width)) = u;
-                            *((int16_t*)(tp + 2 * u + v * 2 * width) + 1) = v;
-                            *(tp + 2 * u + v * 2 * width + 1) = i;
+//                            *((int16_t*)(tp + 2 * u + v * 2 * width)) = u;
+//                            *((int16_t*)(tp + 2 * u + v * 2 * width) + 1) = v;
+//                            *(tp + 2 * u + v * 2 * width + 1) = i;
+                            *(tp + u + v * width ) = i;
 //                            num++;
                         }
                 }
@@ -989,9 +998,10 @@ void computeTrianglePoints(const vector<Elas::support_pt> &p_support, const vect
                     for (int32_t v = min(v_1, v_2); v < max(v_1, v_2); v++)
                         if (!param.subsampling || v % 2 == 0)
                         {
-                            *((int16_t*)(tp + 2 * u + v * 2 * width)) = u;
-                            *((int16_t*)(tp + 2 * u + v * 2 * width) + 1) = v;
-                            *(tp + 2 * u + v * 2 * width + 1) = i;
+//                            *((int16_t*)(tp + 2 * u + v * 2 * width)) = u;
+//                            *((int16_t*)(tp + 2 * u + v * 2 * width) + 1) = v;
+//                            *(tp + 2 * u + v * 2 * width + 1) = i;
+                              *(tp + u + v * width) = i;
 //                            num++;
                         }
                 }
@@ -1014,21 +1024,22 @@ int32_t* disparity_grid_gpu_2 = NULL;
 float* D1_gpu = NULL;
 float* D2_gpu = NULL;
 int32_t* P_gpu = NULL;
-triangle1* tri_gpu_1, *tri_gpu_2;
+Elas::triangle* tri_gpu_1, *tri_gpu_2;
 plane *plane_1, *plane_2;
 plane *plane_g1, *plane_g2;
 
 
 cudaError_t err;
 
-int32_t dims[3] = {WIDTH,HEIGH,WIDTH};
+int32_t dims[3] = {WIDTH, HEIGH, WIDTH};
 
 static int flag = 1;
 
 
 void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector<Elas::support_pt> &p_support, \
               vector<Elas::triangle> &tri_1, vector<Elas::triangle> &tri_2, \
-              float* D1, float* D2, uint8_t* I1, uint8_t* I2)
+              float* D1, float* D2, uint8_t* I1, uint8_t* I2, int8_t* P_g,\
+             int8_t *tp1_g, int8_t* tp2_g, int8_t* tp1_c, int8_t* tp2_c)
 {
 
 
@@ -1036,160 +1047,71 @@ void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector
     clock_t t1, t2;
 
     // get width, height and bytes per line
-    width = dims[0];    //715*492
+    width = dims[0];    //
     height = dims[1];
-    bpl = width + 15 - (width - 1) % 16;  //720
+    bpl = dims[2];  //
 
     // allocate memory for disparity grid
-    int32_t grid_width = (int32_t)ceil((float)width / (float)20);
-    int32_t grid_height = (int32_t)ceil((float)height / (float)20);
+    int32_t grid_width = 16; //(int32_t)ceil((float)width / (float)20);
+    int32_t grid_height = 12; //(int32_t)ceil((float)height / (float)20);
     int32_t grid_dims[3] = { 63 + 2,grid_width,grid_height };
-//    grid_dims[3] = { 63 + 2,grid_width,grid_height };
-
-
-        cudaSetDeviceFlags(cudaDeviceMapHost);
 
 
 
-int32_t P_SUPPORT_SIZE = p_support.size();
-int32_t TRI_SIZE1 = tri_1.size();
-int32_t TRI_SIZE2 = tri_2.size();
+    int32_t P_SUPPORT_SIZE = p_support.size();
+    int32_t TRI_SIZE1 = tri_1.size();
+    int32_t TRI_SIZE2 = tri_2.size();
 
-int32_t* tp1_cpu, *tp2_cpu;
-int32_t *tp1_gpu, *tp2_gpu;
-
-
-//cout<<"P_SUPPORT_SIZE: "<<P_SUPPORT_SIZE<<endl;
-//cout<< "TRI_SIZE1: " << TRI_SIZE1 <<endl;
-//cout<< "TRI_SIZE2: " << TRI_SIZE2 <<endl;
+    int8_t* tp1_cpu = tp1_c;
+    int8_t* tp2_cpu = tp2_c;
+    int8_t *tp1_gpu = tp1_g;
+    int8_t *tp2_gpu = tp2_g;
 
 
-cudaHostAlloc((void**)&tp2_cpu,sizeof(int32_t) * width * height * 2,cudaHostAllocWriteCombined|cudaHostAllocMapped);
-cudaHostAlloc((void**)&tp1_cpu,sizeof(int32_t) * width * height * 2,cudaHostAllocWriteCombined|cudaHostAllocMapped);
-
-//tp2_cpu = (int32_t*)malloc(sizeof(int32_t) * width * height * 2);
-//tp1_cpu = (int32_t*)malloc(sizeof(int32_t) * width * height * 2);
-
-for (int j = 0; j < height; j++) {
-    for (int i = 0; i < width * 2; i++) {
-        tp1_cpu[i + j * width * 2] = -1;
-        tp2_cpu[i + j * width * 2] = -1;
-    }
-}
-
-t1 = clock();
-computeTrianglePoints(p_support, tri_1, 0, width, TRI_SIZE1, tp1_cpu);
-computeTrianglePoints(p_support, tri_2, 1, width, TRI_SIZE2, tp2_cpu);
-t2 = clock();
-//printf("computeTripoints : %ldms\n", (t2 - t1)/1000);
-
-cudaHostGetDevicePointer(&tp1_gpu, tp1_cpu, 0);
-cudaHostGetDevicePointer(&tp2_gpu, tp2_cpu, 0);
-
-//if(1 == flag){
-//    cudaMalloc((void **)&tp1_gpu, sizeof(int32_t) * width * height * 2);
-//    cudaMalloc((void **)&tp2_gpu, sizeof(int32_t) * width * height * 2);
-//}
-
-//t1 = clock();
-//cudaMemcpy(tp1_gpu, tp1_cpu, sizeof(int32_t) * width * height * 2, cudaMemcpyHostToDevice);
-//cudaMemcpy(tp2_gpu, tp2_cpu, sizeof(int32_t) * width * height * 2, cudaMemcpyHostToDevice);
-//t2 = clock();
-//printf("cudaMemcpy tp1_gpu: %ldms\n", (t2 - t1)/1000);
-
-//if(1 == flag){
-//    cudaMalloc((void **)&grid_dims_gpu, sizeof(int32_t) * 3);
-    cudaMalloc((void **)&disparity_grid_gpu_1, sizeof(int32_t) * (param.disp_max + 2) * grid_height * grid_width);
-    cudaMalloc((void **)&disparity_grid_gpu_2, sizeof(int32_t) * (param.disp_max + 2) * grid_height * grid_width);
-//}
-t1 = clock();
-//cudaMemcpy(grid_dims_gpu, grid_dims, sizeof(int32_t) * 3, cudaMemcpyHostToDevice);
-cudaMemcpy(disparity_grid_gpu_1, disparity_grid_1, sizeof(int32_t) * (param.disp_max + 2) * grid_height * grid_width, cudaMemcpyHostToDevice);
-cudaMemcpy(disparity_grid_gpu_2, disparity_grid_2, sizeof(int32_t) * (param.disp_max + 2) * grid_height * grid_width, cudaMemcpyHostToDevice);
-t2 = clock();
-//printf("cudaMemcpy disparity_grid_gpu_2: %ldms\n", (t2 - t1)/1000);
+    computeTrianglePoints(p_support, tri_1, 0, width, TRI_SIZE1, tp1_cpu);
+    computeTrianglePoints(p_support, tri_2, 1, width, TRI_SIZE2, tp2_cpu);
 
 
 
-t1 = clock();
-    cudaMalloc((void **)&tri_gpu_1, sizeof(triangle1) * TRI_SIZE1);
-    cudaMalloc((void **)&tri_gpu_2, sizeof(triangle1) * TRI_SIZE2);
+    cudaMalloc((void **)&tri_gpu_1, sizeof(Elas::triangle) * TRI_SIZE1);
+    cudaMalloc((void **)&tri_gpu_2, sizeof(Elas::triangle) * TRI_SIZE2);
 
-//    cudaMalloc((void **)&D1_gpu, sizeof(float) * width * height);
-//    cudaMalloc((void **)&D2_gpu, sizeof(float) * width * height);
     cudaMalloc((void **)&P_gpu, sizeof(int32_t) * width * height);
-    cudaMalloc((void **)&I_desc1, 16 * width*height * sizeof(uint8_t));
-    cudaMalloc((void **)&I_desc2, 16 * width*height * sizeof(uint8_t));
 
-t2 = clock();
-//printf("cudaMalloc I_desc: %ldms\n", (t2 - t1)/1000);
+    t1 = clock();
+    cudaMemcpy(tri_gpu_1, &tri_1[0], sizeof(Elas::triangle) * TRI_SIZE1, cudaMemcpyHostToDevice);
+    cudaMemcpy(tri_gpu_2, &tri_2[0], sizeof(Elas::triangle) * TRI_SIZE2, cudaMemcpyHostToDevice);
+    t2 = clock();
+    //printf("cudaMemcpy I_desc: %ldms\n", (t2 - t1)/1000);
+    printf("a = %d\n", sizeof(triangle1) );
+    printf("b = %d\n", sizeof(Elas::triangle) );
 
-flag = 0;
-t1 = clock();
-cudaMemcpy(tri_gpu_1, &tri_1[0], sizeof(Elas::triangle) * TRI_SIZE1, cudaMemcpyHostToDevice);
-cudaMemcpy(tri_gpu_2, &tri_2[0], sizeof(Elas::triangle) * TRI_SIZE2, cudaMemcpyHostToDevice);
-//cudaMemcpy(D1_gpu, D1, sizeof(float) * width * height, cudaMemcpyHostToDevice);
-//cudaMemcpy(D2_gpu, D2, sizeof(float) * width * height, cudaMemcpyHostToDevice);
-cudaMemcpy(I_desc1, I1, 16 * width*height * sizeof(uint8_t), cudaMemcpyHostToDevice);
-cudaMemcpy(I_desc2, I2, 16 * width*height * sizeof(uint8_t), cudaMemcpyHostToDevice);
-t2 = clock();
-//printf("cudaMemcpy I_desc: %ldms\n", (t2 - t1)/1000);
-
-
-// number of disparities
-const int32_t disp_num = grid_dims[0] - 1;
-// descriptor window_size
-int32_t window_size = 2;
-// pre-compute prior
-float two_sigma_squared = 2 * param.sigma*param.sigma;
-int32_t* P = new int32_t[disp_num];
-for (int32_t delta_d = 0; delta_d<disp_num; delta_d++)
-    P[delta_d] = (int32_t)((-log(param.gamma + exp(-delta_d*delta_d / two_sigma_squared)) + log(param.gamma)) / param.beta);
-int32_t plane_radius = (int32_t)max((float)ceil(param.sigma*param.sradius), (float)2.0);
-//plane_radius = 2;
-t1 = clock();
-cudaMemcpy(P_gpu, P, sizeof(int32_t) * disp_num, cudaMemcpyHostToDevice);
-t2 = clock();
-//printf("cudaMemcpy P_gpu: %ldms\n", (t2 - t1)/1000);
-
-
-//bool subsampling = param.subsampling;
-//int32_t match_texture = param.match_texture;
-//int32_t grid_size = param.grid_size;
+    int32_t plane_radius = 2; //(int32_t)max((float)ceil(param.sigma*param.sradius), (float)2.0);
+    printf("ppppppp = %d\n", plane_radius);
+    //plane_radius = 2;
+    t1 = clock();
+    cudaMemcpy(P_gpu, P_g, sizeof(int32_t) * (grid_dims[0] - 1), cudaMemcpyHostToDevice);
+    t2 = clock();
 
 
 
-dim3 threads(320, 1);
-dim3 grid(iDivUp(width, (threads.x)), iDivUp(height,threads.y));
+    dim3 threads(320, 1);
+    dim3 grid(iDivUp(width, (threads.x)), iDivUp(height,threads.y));
 
-//printf("goin Triangle_match kernel\n");
-t1 = clock();
-Triangle_Match1 << <grid, threads, 0>> > (tri_gpu_1, disparity_grid_gpu_1, \
-              I_desc1, I_desc2, P_gpu, plane_radius, 0, D1, tp1_gpu);
+    cudaDeviceSynchronize();
 
-Triangle_Match1 << <grid, threads, 0>> > (tri_gpu_2, disparity_grid_gpu_2, \
-     I_desc2, I_desc1, P_gpu, plane_radius, 1, D2, \
-                      tp2_gpu);
+    //printf("goin Triangle_match kernel\n");
+    t1 = clock();
+    Triangle_Match1 << <grid, threads, 0>> > (tri_gpu_1, disparity_grid_1, \
+                  I1, I2, P_g, plane_radius, 0, D1, tp1_gpu);
 
-//cudaMemcpy(D1, D1_gpu, sizeof(float) * width * height, cudaMemcpyDeviceToHost);
-//cudaMemcpy(D2, D2_gpu, sizeof(float) * width * height, cudaMemcpyDeviceToHost);
-t2 = clock();
-//printf("Triangle_Match1 : %ldms\n", (t2 - t1)/1000);
+    Triangle_Match1 << <grid, threads, 0>> > (tri_gpu_2, disparity_grid_2, \
+         I2, I1, P_g, plane_radius, 1, D2, \
+                          tp2_gpu);
 
-//cudaThreadExit();
+    t2 = clock();
+    //printf("Triangle_Match1 : %ldms\n", (t2 - t1)/1000);
 
-//cudaFree(D1_gpu);
-//cudaFree(D2_gpu);
-//cudaFree(P_gpu);
-//cudaFree(I_desc1);
-//cudaFree(I_desc2);
-//cudaFree(tp1_gpu);
-//cudaFree(tp2_gpu);
-//cudaFree(grid_dims_gpu);
-//cudaFree(disparity_grid_gpu_1);
-//cudaFree(disparity_grid_gpu_2);
-//cudaFree(plane_g1);
-//cudaFree(plane_g2);
   cudaDeviceSynchronize();
 
 

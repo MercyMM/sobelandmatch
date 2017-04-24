@@ -10,6 +10,8 @@
 #include <vector>
 //#include <emmintrin.h>
 
+#include "descriptor.h"
+
 // define fixed-width datatypes for Visual Studio projects
 #ifndef _MSC_VER
   #include <stdint.h>
@@ -125,8 +127,20 @@ public:
     }
   };
 
-  // constructor, input: parameters  
-  Elas (parameters param) : param(param) {}
+
+  Descriptor desc_1;
+  Descriptor desc_2;
+//  int8_t *D_can_g, *D_can_c;
+  int8_t *D_sup_g, *D_sup_c;
+  float *D1_data_c, *D1_data_g;
+  float *D2_data_c, *D2_data_g; //1->left; 2->right image
+  int32_t *disp_grid_1_c, *disp_grid_1_g;
+  int32_t *disp_grid_2_c, *disp_grid_2_g;
+  int8_t *tp1_c, *tp1_g;
+  int8_t *tp2_c, *tp2_g;
+  int8_t *P_g, *P_c;
+  // constructor, input: parameters
+  Elas (parameters param, int32_t width, int32_t height, int32_t,int32_t);
 
   // deconstructor
   ~Elas () {}  
