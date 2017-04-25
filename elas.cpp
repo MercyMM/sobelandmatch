@@ -82,9 +82,8 @@ desc_2(width,height,width)
 void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t* dims)
 {
 
-    struct timeval start, end;
+      struct timeval start, end;
       clock_t t1,t2;
-      // get width, height and bytes per line
       width  = dims[0];
       height = dims[1];
       bpl    = width + 15-(width-1)%16;

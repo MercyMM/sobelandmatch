@@ -41,7 +41,6 @@ int main(int argc, char** argv)
 
     Elas::parameters param;//Æ¥Åä²ÎÊý
     param.postprocess_only_left = true;
-//    Elas elas(param);
     Elas elas(param, (int32_t)WIDTH, (int32_t)HEIGH, D_can_width, D_can_height );
 
 //    initCudaMalloc();
@@ -49,21 +48,7 @@ int main(int argc, char** argv)
 
 
     const int32_t dims[3] = {WIDTH,HEIGH,WIDTH}; // bytes per line = width
-    float *D1_data, *D2_data, *D1_data_g, *D2_data_g;
 
-//    D1_data = (float*)malloc(WIDTH*HEIGH*sizeof(float));
-//    D2_data = (float*)malloc(WIDTH*HEIGH*sizeof(float));
-    D1_data_g = (float*)HostMal((void**)&D1_data, WIDTH*HEIGH*sizeof(float));
-    D2_data_g = (float*)HostMal((void**)&D2_data, WIDTH*HEIGH*sizeof(float));
-
-
-    // init disparity image to -10
-
-
-        for (int32_t i = 0; i < WIDTH*HEIGH; i++) {
-            *(D1_data + i) = -10;
-            *(D2_data + i) = -10;
-        }
 
 //    cvNamedWindow("capture_left");
 //    cvNamedWindow("capture_right");
