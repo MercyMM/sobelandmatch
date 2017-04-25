@@ -50,23 +50,18 @@ Elas::Elas(parameters param, int32_t width, int32_t height, int32_t D_can_width,
 :param(param),desc_1(width, height, width),\
 desc_2(width,height,width)
 {
-    printf("aa\n");
+
     D_sup_g         = (int8_t*)HostMal((void**)&D_sup_c, D_can_width*D_can_height * sizeof(int8_t) );
-    for(int i = 0; i < D_can_width*D_can_height * sizeof(int8_t); i++){
-        *(D_sup_c + i) = -1;
-    }
+
+    memset(D_sup_c, -1, D_can_width*D_can_height * sizeof(int8_t));
     D1_data_g       = (float*)HostMal((void**)&D1_data_c, width * height * sizeof(float));
     D2_data_g       = (float*)HostMal((void**)&D2_data_c, width * height * sizeof(float));
-    memset(D1_data_c, -10, width * height * sizeof(float));
-    memset(D2_data_c, -10, width * height * sizeof(float));
+
     disp_grid_1_g   = (int32_t*)HostMal((void**)&disp_grid_1_c,  65 * GRID_WIDTH * GRID_HEIGH * sizeof(int32_t));
     disp_grid_2_g   = (int32_t*)HostMal((void**)&disp_grid_2_c,  65 * GRID_WIDTH * GRID_HEIGH * sizeof(int32_t));
-    memset(disp_grid_1_c, 0, 65 * GRID_WIDTH * GRID_HEIGH * sizeof(int32_t));
-    memset(disp_grid_2_c, 0, 65 * GRID_WIDTH * GRID_HEIGH * sizeof(int32_t));
     tp1_g           = (int8_t*)HostMal((void**)&tp1_c, width * height * sizeof(int8_t) );
     tp2_g           = (int8_t*)HostMal((void**)&tp2_c, width * height * sizeof(int8_t) );
-        memset(tp1_c, -1,  width * height * sizeof(int8_t));
-        memset(tp2_c, -1,  width * height * sizeof(int8_t));
+
     P_g             = (int8_t*)HostMal((void**)&P_c, 64 * sizeof(int8_t));
 
     int8_t temp[] = {-14,-9,-2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,64};
@@ -100,6 +95,7 @@ void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t*
 
       gettimeofday(&start, NULL);
       vector<support_pt> p_support = computeSupportMatches_g(desc_1.I_desc_g, desc_2.I_desc_g,  D_sup_c, D_sup_g);
+//      vector<support_pt> p_support = computeSupportMatches(desc_1.I_desc, desc_2.I_desc);
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
       cout <<"computesuppportmatch: "<< timeuse/1000 << "ms. " ; cout << "support size: "<<p_support.size() <<endl;
@@ -326,10 +322,8 @@ inline int16_t Elas::computeMatchingDisparity (const int32_t &u,const int32_t &v
       int32_t sum = 0;
       for (int32_t i=0; i<16; i++)
         sum += abs((int32_t)(*(I1_block_addr+i))-128);
-      if( 25 == u && 5 == v){
-          printf("sum = %d\n", sum);
-      }
-      if (sum<param.support_texture)
+
+      if (sum< 100)
         return -1;
 
       // load first blocks to xmm registers
@@ -338,6 +332,7 @@ inline int16_t Elas::computeMatchingDisparity (const int32_t &u,const int32_t &v
 //      xmm3 = _mm_load_si128((__m128i*)(I1_block_addr+desc_offset_3));
 //      xmm4 = _mm_load_si128((__m128i*)(I1_block_addr+desc_offset_4));
 
+//      printf(" %d ", sum);
       // declare match energy for each disparity
       int32_t u_warp;
 
@@ -411,15 +406,15 @@ sumD = vgetq_lane_u32(sum_11, 3);
 
 //printf("%d ",sum2);
 sum = sumA + sumB + sumC + sumD;
-if( 25 == u && 5 == v){
+//if( 25 == u && 5 == v){
 //    for(int i = 0; i < 16; i++)
 //        printf("%d ", *(I1_block_addr + desc_offset_1 + i));
 //    for(int i = 0; i < 16; i++)
 //        printf("%d ", *(I2_block_addr + desc_offset_1 + i));
 //    printf("\n");
 
-    printf("%d + %d + %d + %d = %d\n", sumA, sumB, sumC, sumD, sum );
-}
+//    printf("%d + %d + %d + %d = %d\n", sumA, sumB, sumC, sumD, sum );
+//}
 
 //int16_t min_1_E = 32767;
 //int16_t min_1_d = -1;
@@ -436,12 +431,12 @@ if( 25 == u && 5 == v){
           min_2_E = sum;
           min_2_d = d;
         }
-        if( 25 == u && 5 == v)
-        printf("aaaaaaa: %d, %d, %d, %d\n", min_1_d, min_2_d, min_1_E,  min_2_E);
+//        if( 25 == u && 5 == v)
+//        printf("aaaaaaa: %d, %d, %d, %d\n", min_1_d, min_2_d, min_1_E,  min_2_E);
 
       }
-      if( 25 == u && 5 == v)
-printf("end aa: %d, %d, %f, %f\n", min_1_d, min_2_d, min_1_E,  (float)min_2_E);
+//      if( 25 == u && 5 == v)
+//printf("end aa: %d, %d, %f, %f\n", min_1_d, min_2_d, min_1_E,  (float)min_2_E);
       // check if best and second best match are available and if matching ratio is sufficient
       if (min_1_d>=0 && min_2_d>=0 && (float)min_1_E<param.support_threshold*(float)min_2_E)
         return min_1_d;
@@ -868,7 +863,7 @@ void Elas::computeDisparityPlanes (vector<support_pt> p_support,vector<triangle>
   // init matrices
   Matrix A(3,3);
   Matrix b(3,1);
-  printf("tri.size: %d\n", tri.size());
+//  printf("tri.size: %d\n", tri.size());
   // for all triangles do
   for (int32_t i=0; i<tri.size(); i++) {
     

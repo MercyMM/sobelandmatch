@@ -39,6 +39,7 @@ public:
   uint8_t* I_desc;
   uint8_t* I_desc_g;
   uint8_t *I_du, *I_dv;
+  uint8_t *I_du_g, *I_dv_g;
   
 private:
 

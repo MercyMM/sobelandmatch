@@ -53,11 +53,13 @@ int main(int argc, char** argv)
 //    cvNamedWindow("capture_left");
 //    cvNamedWindow("capture_right");
 //    cvNamedWindow("capture_depth");
-//    CvCapture* capture_left = cvCreateFileCapture("./video/result_left.avi");
-//    CvCapture* capture_right = cvCreateFileCapture("./video/result_right.avi");
+    CvCapture* capture_left = cvCreateFileCapture("../video/result_left.avi");
+    CvCapture* capture_right = cvCreateFileCapture("../video/result_right.avi");
 
     struct timeval start, end;
-
+    double timeuse;
+    IplImage* img1f = cvCreateImage(cvSize(WIDTH, HEIGH), IPL_DEPTH_8U,1);
+    double vmin, vmax, alpha;
 
 //    IplImage* img1 = cvLoadImage("left4.png",0);
 //    IplImage* img2 = cvLoadImage("right4.png",0);
@@ -65,14 +67,14 @@ int main(int argc, char** argv)
     char key ;
     uint8_t *I1, *I2;
 //    printf("aaaaaa\n");
-//    while(1)
-//    {
+    while(1)
+    {
 
 //        img1 = cvQueryFrame(capture_left);
 //        img2 = cvQueryFrame(capture_right);
 
-//        img1 = cvLoadImage("left0.png",0);
-//        img2 = cvLoadImage("right0.png",0);
+        img1 = cvLoadImage("left0.png",0);
+        img2 = cvLoadImage("right0.png",0);
 
 //        cout<<"width,heigth,imageSize "<<img1->width<< "  "<< img1->height<< "  "<<img1->imageSize<< "  " << img1->widthStep<<endl;
 
@@ -84,93 +86,114 @@ int main(int argc, char** argv)
 //        {
 //            cvSaveImage("name_left.png", img1);
 //            cvSaveImage("name_right.png", img2);
-            img1 = cvLoadImage("left0.png",0);
-            img2 = cvLoadImage("right0.png",0);
+
+//            img1 = cvLoadImage("left0.png",0);
+//            img2 = cvLoadImage("right0.png",0);
             I1 = (uint8_t*)img1->imageData;
             I2 = (uint8_t*)img2->imageData;
 
             gettimeofday(&start, NULL);
             elas.process(I1, I2, elas.D1_data_g, elas.D2_data_g, dims);
             gettimeofday(&end, NULL);
-            double timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+            timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
             printf("elas process use : %fms\n", timeuse/1000);
-
-            cout<<"show picture" << endl;
-            IplImage* img1f = cvCreateImage(cvSize(WIDTH, HEIGH), IPL_DEPTH_8U,1);
 
             for (int32_t i=0; i<WIDTH*HEIGH; i++)
             {
-//                img1f->imageData[i] = (uint8_t)max(255.0*(D1_data[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
                 img1f->imageData[i] = (uint8_t)max(255.0*(elas.D1_data_c[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
-
             }
             cvShowImage("capture_dis1",img1f);
-
-//            cvSaveImage("dis1.png", img1f);
-
-
+cvShowImage("picture", img1);
             Mat imgMat(img1f, 0);
-//            Mat imgMat(img1, 0);
             Mat imgColor;
-            double vmin, vmax, alpha;
             minMaxLoc(imgMat, &vmin, &vmax);
-            printf("min,max: %lf, %lf\n", vmin, vmax);
             alpha = 255.0 / (vmax - vmin);
             imgMat.convertTo(imgMat, CV_8U, alpha, -vmin*alpha);
             applyColorMap(imgMat, imgColor, COLORMAP_JET);
             imshow("capture_dis", imgColor);
-//             cvShowImage("capture_depth",img1f);
-//            cvSaveImage("aaa.jpg", imgColor);
-//            imwrite("aaa.jpg", imgColor);
-             cvWaitKey();
+            char key =  cvWaitKey(0);
+            if( 'q' == key){
+                break;
+            }
+}
+
+
+//             img1 = cvLoadImage("left1.png",0);
+//             img2 = cvLoadImage("right1.png",0);
+//             I1 = (uint8_t*)img1->imageData;
+//             I2 = (uint8_t*)img2->imageData;
+
+//             gettimeofday(&start, NULL);
+//             elas.process(I1, I2, elas.D1_data_g, elas.D2_data_g, dims);
+//             gettimeofday(&end, NULL);
+//             timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+//             printf("elas process use : %fms\n", timeuse/1000);
+
+////             IplImage* img1f = cvCreateImage(cvSize(WIDTH, HEIGH), IPL_DEPTH_8U,1);
+
+//             for (int32_t i=0; i<WIDTH*HEIGH; i++)
+//             {
+// //                img1f->imageData[i] = (uint8_t)max(255.0*(D1_data[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
+//                 img1f->imageData[i] = (uint8_t)max(255.0*(elas.D1_data_c[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
+
+//             }
+//             cvShowImage("capture_dis1",img1f);
+
+// //            cvSaveImage("dis1.png", img1f);
+
+
+//             Mat imgMat2(img1f, 0);
+// //            Mat imgMat(img1, 0);
+//             Mat imgColor2;
+////             double vmin, vmax, alpha;
+//             minMaxLoc(imgMat2, &vmin, &vmax);
+////             printf("min,max: %lf, %lf\n", vmin, vmax);
+//             alpha = 255.0 / (vmax - vmin);
+//             imgMat2.convertTo(imgMat2, CV_8U, alpha, -vmin*alpha);
+//             applyColorMap(imgMat2, imgColor2, COLORMAP_JET);
+//             imshow("capture_dis", imgColor2);
+// //             cvShowImage("capture_depth",img1f);
+// //            cvSaveImage("aaa.jpg", imgColor);
+// //            imwrite("aaa.jpg", imgColor);
+//              cvWaitKey();
 
 
 
 
 
-             img1 = cvLoadImage("left1.png",0);
-             img2 = cvLoadImage("right1.png",0);
-             I1 = (uint8_t*)img1->imageData;
-             I2 = (uint8_t*)img2->imageData;
+//              img1 = cvLoadImage("left4.png",0);
+//              img2 = cvLoadImage("right4.png",0);
+//              I1 = (uint8_t*)img1->imageData;
+//              I2 = (uint8_t*)img2->imageData;
 
-             gettimeofday(&start, NULL);
-             elas.process(I1, I2, elas.D1_data_g, elas.D2_data_g, dims);
-             gettimeofday(&end, NULL);
-             timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
-             printf("elas process use : %fms\n", timeuse/1000);
+//              gettimeofday(&start, NULL);
+//              elas.process(I1, I2, elas.D1_data_g, elas.D2_data_g, dims);
+//              gettimeofday(&end, NULL);
+//              timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+//              printf("elas process use : %fms\n", timeuse/1000);
 
-             cout<<"show picture" << endl;
-//             IplImage* img1f = cvCreateImage(cvSize(WIDTH, HEIGH), IPL_DEPTH_8U,1);
+////              cout<<"show picture" << endl;
 
-             for (int32_t i=0; i<WIDTH*HEIGH; i++)
-             {
- //                img1f->imageData[i] = (uint8_t)max(255.0*(D1_data[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
-                 img1f->imageData[i] = (uint8_t)max(255.0*(elas.D1_data_c[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
+//              for (int32_t i=0; i<WIDTH*HEIGH; i++)
+//              {
+//                  img1f->imageData[i] = (uint8_t)max(255.0*(elas.D1_data_c[i]-param.disp_min)/(param.disp_max-param.disp_min),0.0);
 
-             }
-             cvShowImage("capture_dis1",img1f);
+//              }
+//              cvShowImage("capture_dis1",img1f);
 
- //            cvSaveImage("dis1.png", img1f);
-
-
-             Mat imgMat2(img1f, 0);
- //            Mat imgMat(img1, 0);
-             Mat imgColor2;
-//             double vmin, vmax, alpha;
-             minMaxLoc(imgMat2, &vmin, &vmax);
-             printf("min,max: %lf, %lf\n", vmin, vmax);
-             alpha = 255.0 / (vmax - vmin);
-             imgMat2.convertTo(imgMat2, CV_8U, alpha, -vmin*alpha);
-             applyColorMap(imgMat2, imgColor2, COLORMAP_JET);
-             imshow("capture_dis", imgColor2);
- //             cvShowImage("capture_depth",img1f);
- //            cvSaveImage("aaa.jpg", imgColor);
- //            imwrite("aaa.jpg", imgColor);
-              cvWaitKey();
-
-
-
-
+//              Mat imgMat3(img1f, 0);
+//              Mat imgColor3;
+// //             double vmin, vmax, alpha;
+//              minMaxLoc(imgMat3, &vmin, &vmax);
+////              printf("min,max: %lf, %lf\n", vmin, vmax);
+//              alpha = 255.0 / (vmax - vmin);
+//              imgMat3.convertTo(imgMat3, CV_8U, alpha, -vmin*alpha);
+//              applyColorMap(imgMat3, imgColor3, COLORMAP_JET);
+//              imshow("capture_dis", imgColor3);
+//  //             cvShowImage("capture_depth",img1f);
+//  //            cvSaveImage("aaa.jpg", imgColor);
+//  //            imwrite("aaa.jpg", imgColor);
+//               cvWaitKey();
 
 
 

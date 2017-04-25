@@ -225,35 +225,29 @@ void sobel3x3( const uint8_t* in, uint8_t* out_v, uint8_t* out_h, int w, int h )
 extern void* HostMalWC(void **p, long size);
 extern void* HostMal(void **p, long size);
 extern void cudaFreeHost_cpuaa(void *p);
-extern int createDesc_gpu(uint8_t* I_desc, uint8_t* I_du, uint8_t* I_dv );
-extern int createDesc_gpu2(uint8_t **I_desc, uint8_t* I_du, uint8_t* I_dv );
+extern int __createDesc_gpu(uint8_t* I_desc, uint8_t* I_du, uint8_t* I_dv );
 
 
 Descriptor::Descriptor(int32_t width,int32_t height,int32_t bpl) {
 //        I_desc        = (uint8_t*)aligned_alloc(16, 16*width*height*sizeof(uint8_t));
     I_desc_g = (uint8_t*) HostMal(&I_desc, 16*width*height*sizeof(uint8_t));
-
-    I_du = (uint8_t*)aligned_alloc(16, bpl*height*sizeof(uint8_t));
-    I_dv = (uint8_t*)aligned_alloc(16, bpl*height*sizeof(uint8_t));
+    I_du_g = (uint8_t*) HostMal((void**)&I_du, bpl*height*sizeof(uint8_t));
+    I_dv_g = (uint8_t*) HostMal((void**)&I_dv, bpl*height*sizeof(uint8_t));
 }
 
 void Descriptor::compute(uint8_t* I, int32_t width,int32_t height,int32_t bpl,bool half_resolution)
 {
 
-//    uint8_t *I_du, *I_dv;
-//    uint8_t *I_du_g, *I_dv_g;
-//    I_du_g = (uint8_t*)HostMalWC((void**)&I_du, bpl*height*sizeof(uint8_t));
-//    I_dv_g = (uint8_t*)HosrtMalWC((void**)&I_dv, bpl*height*sizeof(uint8_t));
-
-//    clock_t t1,t2;
+    clock_t t1,t2;
+    t1=clock();
     sobel3x3(I,I_du,I_dv,bpl,height);
+    t2 = clock();
+//    cout << "sobel3x3 " << (t2-t1)/CLK_TCK << "ms" <<endl;
 
-//    t1=clock();
+    t1=clock();
 //    createDescriptor(I_du, I_dv, width, height, bpl, 1);
-    createDescriptor(I_du, I_dv, width, height, bpl, 1);
-//    createDesc_gpu((uint8_t*)I_desc_g, I_du_g, I_dv_g);
-//    createDesc_gpu2((uint8_t**)&I_desc, I_du_g, I_dv_g);
-//    t2 = clock();
+    __createDesc_gpu(I_desc_g, I_du_g, I_dv_g);
+    t2 = clock();
 //    cout << "createDescriptor " << (t2-t1)/CLK_TCK << "ms" <<endl;
 
 

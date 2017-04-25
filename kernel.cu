@@ -55,63 +55,83 @@ void* HostMal(void **p, long size)
     //将常规的主机指针转换成指向设备内存空间的指针
     cudaHostGetDevicePointer(&p_g, *p, 0);
     cudaDeviceSynchronize();
+//    cudaError_t err = cudaGetLastError();
+//    printf("cuda error: %s\n", cudaGetErrorString(err));
+
     return p_g;
 }
 
 
-
+//dim3 threads(320 - 6 , 1);
+//dim3 grid( 1, 240 -6 ); => (0, 233)
 __global__ void createDesc_gpu_kernel(uint8_t* I_desc, uint8_t* I_du, uint8_t* I_dv)
 {
 
-    int x = blockDim.x * blockIdx.x + threadIdx.x;
-    int y = blockDim.y * blockIdx.y + threadIdx.y;
+    int u = blockDim.x * blockIdx.x + threadIdx.x;
+    int v = blockDim.y * blockIdx.y + threadIdx.y;
 
-  if (x < WIDTH - 3 && y < HEIGH - 3 && x >= 3 && y >= 3) {
+    int x = u + 3;
+    int y = v + 3;
 
     uint8_t *I_desc_curr;
     uint32_t addr_v0, addr_v1, addr_v2, addr_v3, addr_v4;
 
+    addr_v2 = y * WIDTH;
+    addr_v0 = addr_v2 - 2 * WIDTH;
+    addr_v1 = addr_v2 - 1 * WIDTH;
+    addr_v3 = addr_v2 + 1 * WIDTH;
+    addr_v4 = addr_v2 + 2 * WIDTH;
 
-//    __shared__ uint8_t      I_dv_share[320 * 5];
-//    __shared__ uint8_t      I2_du_share[320 * 3];
 
-        addr_v2 = y * WIDTH;
-        addr_v0 = addr_v2 - 2 * WIDTH;
-        addr_v1 = addr_v2 - 1 * WIDTH;
-        addr_v3 = addr_v2 + 1 * WIDTH;
-        addr_v4 = addr_v2 + 2 * WIDTH;
+    __shared__ uint8_t      I_du_share[320 * 5];
+    __shared__ uint8_t      I_dv_share[320 * 3];
+
+    for(int i = 0; i < 5; i++){
+        *(I_du_share + x + i * 320) = *(I_du + x + (y-2 + i) * 320);
+    }
+
+    for(int i = 0; i < 3; i++){
+        I_dv_share[x + i * 320] = I_dv[x + (y-1 + i) * 320];
+    }
+
+    __syncthreads();
 
         I_desc_curr = I_desc + (y* WIDTH + x) * 16;
 
-        *(I_desc_curr++) = *(I_du + addr_v0 + x + 0);
-        *(I_desc_curr++) = *(I_du + addr_v1 + x - 2);
-        *(I_desc_curr++) = *(I_du + addr_v1 + x + 0);
-        *(I_desc_curr++) = *(I_du + addr_v1 + x + 2);
-        *(I_desc_curr++) = *(I_du + addr_v2 + x - 1);
-        *(I_desc_curr++) = *(I_du + addr_v2 + x + 0);
-        *(I_desc_curr++) = *(I_du + addr_v2 + x + 0);
-        *(I_desc_curr++) = *(I_du + addr_v2 + x + 1);
-        *(I_desc_curr++) = *(I_du + addr_v3 + x - 2);
-        *(I_desc_curr++) = *(I_du + addr_v3 + x + 0);
-        *(I_desc_curr++) = *(I_du + addr_v3 + x + 2);
-        *(I_desc_curr++) = *(I_du + addr_v4 + x + 0);
-        *(I_desc_curr++) = *(I_dv + addr_v1 + x + 0);
-        *(I_desc_curr++) = *(I_dv + addr_v2 + x - 1);
-        *(I_desc_curr++) = *(I_dv + addr_v2 + x + 1);
-        *(I_desc_curr++) = *(I_dv + addr_v3 + x + 0);
+        *(I_desc_curr++) = *(I_du_share + (0 * WIDTH + x + 0) );
+        *(I_desc_curr++) = *(I_du_share + (1 * WIDTH + x - 2) );
+        *(I_desc_curr++) = *(I_du_share + (1 * WIDTH + x + 0) );
+        *(I_desc_curr++) = *(I_du_share + (1 * WIDTH + x + 2) );
 
-    }
+        *(I_desc_curr++) = *(I_du_share + (2 * WIDTH + x - 1) );
+        *(I_desc_curr++) = *(I_du_share + (2 * WIDTH + x + 0) );
+        *(I_desc_curr++) = *(I_du_share + (2 * WIDTH + x + 0) );
+        *(I_desc_curr++) = *(I_du_share + (2 * WIDTH + x + 2) );
+
+        *(I_desc_curr++) = *(I_du_share + (3 * WIDTH + x - 2) );
+        *(I_desc_curr++) = *(I_du_share + (3 * WIDTH + x + 0) );
+        *(I_desc_curr++) = *(I_du_share + (3 * WIDTH + x + 2) );
+        *(I_desc_curr++) = *(I_du_share + (4 * WIDTH + x + 0) );
+
+        *(I_desc_curr++) = *(I_dv_share + (0 * WIDTH + x + 0) );
+        *(I_desc_curr++) = *(I_dv_share + (1 * WIDTH + x + 1) );
+        *(I_desc_curr++) = *(I_dv_share + (1 * WIDTH + x - 1) );
+        *(I_desc_curr++) = *(I_dv_share + (2 * WIDTH + x + 0) );
+
 }
 
 
 
-int createDesc_gpu(uint8_t* I_desc, uint8_t* I_du, uint8_t* I_dv )
+int __createDesc_gpu(uint8_t* I_desc, uint8_t* I_du_g, uint8_t* I_dv_g )
 {
-    dim3 threads(320, 1);
-    dim3 grid( WIDTH / (threads.x), HEIGH / threads.y );
-
-    createDesc_gpu_kernel<<<grid, threads, 0 >>>(I_desc, I_du, I_dv );
+    dim3 threads(320 - 6 , 1);
+    dim3 grid( 1, 240 -6 );
 //    cudaDeviceSynchronize();
+    createDesc_gpu_kernel<<<grid, threads, 0 >>>(I_desc, I_du_g, I_dv_g );
+//    cudaError_t err = cudaGetLastError();
+//    printf("cuda error: %s\n", cudaGetErrorString(err));
+    cudaDeviceSynchronize();
+
 }
 
 
@@ -316,12 +336,10 @@ __global__ void sptMathKernel(int32_t D_can_width, int32_t D_can_height, int8_t*
     I2_line_addr = desc2 + line_offset;
 
     uint32_t oneLine = WIDTH * 16;
-    __shared__ uint8_t I0_desc_shared[320 * 16];
     __shared__ uint8_t I1_desc_shared[320 * 16 * 2];
     __shared__ uint8_t I2_desc_shared[320 * 16 * 2];
 
     for(int i = 0; i < 85; i++){
-        I0_desc_shared[x + i * BLOCKX ] = *(I1_line_addr + x + i * BLOCKX );
         I1_desc_shared[x + i * BLOCKX ] = *(I1_line_addr + x + i * BLOCKX - 2 * oneLine);
         I1_desc_shared[x + i * BLOCKX + oneLine] = *(I1_line_addr + x + i * BLOCKX + 2 * oneLine);
 
@@ -330,6 +348,13 @@ __global__ void sptMathKernel(int32_t D_can_width, int32_t D_can_height, int8_t*
     }
 
     __syncthreads();
+
+    for (int32_t i=0; i<16; i++)
+        sum += abs((int32_t)(*(I1_line_addr + 16 * u +i))-128);
+    if (sum<10){
+      d1 = -1;
+      return;
+    }
 
     I1_block_addr_1 = I1_desc_shared + 16 * u ;
     I1_block_addr_2 = I1_desc_shared + 16 * u + oneLine ;
@@ -353,6 +378,7 @@ __global__ void sptMathKernel(int32_t D_can_width, int32_t D_can_height, int8_t*
 //        sum = result1 + result2 + result3 + result4;
 sum = computeMatchEnergy1_new(I1_desc_shared, I1_desc_shared + oneLine, I2_desc_shared, I2_desc_shared + oneLine, u, u_wrap);
 
+
         if (sum<min_1_E) {
             min_2_E = min_1_E;
             min_2_d = min_1_d;
@@ -373,58 +399,59 @@ sum = computeMatchEnergy1_new(I1_desc_shared, I1_desc_shared + oneLine, I2_desc_
 #pragma unroll
 //    for (int32_t i=0; i<16; i++)
 //      sum += abs((int32_t)(*(I1_block_addr_1+i))-128);
-    for (int32_t i=0; i<16; i++)
-        sum += abs((int32_t)(*(I0_desc_shared + 16 * u +i))-128);
-    if (sum<10)
-      d1 = -1;
-    if(d1 >= 0){
-        D_can[x + y * D_can_width] = d1;
+
+//    if(d1 >= 0){
+//        D_can[x + y * D_can_width] = d1;
+//    }
+
+    if (d1 >= 0){
+        min_1_E = MIN_1_E;
+        min_1_d = MIN_1_D;
+        min_2_E = MIN_2_E;
+        min_2_d = MIN_2_D;
+        u = u - d1;
+        disp_max_valid = min(63, WIDTH - u - 5);
+        I2_block_addr_1 = I2_desc_shared + 16 * u;
+        I2_block_addr_2 = I2_desc_shared + 16 * u + 320 * 16;
+
+        sum = 0;
+    #pragma unroll
+        for (int32_t i=0; i<16; i++)
+          sum += abs((int32_t)(*(I2_line_addr+i))-128);
+        if (sum<10){
+            return;
+        }
+        sum = 0;
+
+        for(int16_t d = 0; d <= disp_max_valid; d++){
+            u_wrap = u + d;
+            I1_block_addr_1 = I1_desc_shared + 16 * u_wrap;
+            I1_block_addr_2 = I1_desc_shared + 16 * u_wrap + 320 * 16;
+            result1 = computeMatchEnergy1(I1_block_addr_1, I2_block_addr_1, DESC_OFFSET_1);
+            result2 = computeMatchEnergy1(I1_block_addr_1, I2_block_addr_1, DESC_OFFSET_2);
+            result3 = computeMatchEnergy1(I1_block_addr_2, I2_block_addr_2, DESC_OFFSET_3);
+            result4 = computeMatchEnergy1(I1_block_addr_2, I2_block_addr_2, DESC_OFFSET_4);
+
+            sum = result1 + result2 + result3 + result4;
+
+            if (sum<min_1_E) {
+                min_2_E = min_1_E;
+                min_2_d = min_1_d;
+                min_1_E = sum;
+                min_1_d = d;
+            }
+            else if (sum<min_2_E) {
+                min_2_E = sum;
+                min_2_d = d;
+            }
+        }
+
+        if (min_1_d>=0 && min_2_d>=0 && (float)min_1_E < 0.85*(float)min_2_E)
+          d2 =  min_1_d;
+        if( d2 >= 0 && abs(d2 - d1) <= 2 )
+            D_can[x + y * D_can_width] = d1;
     }
 
-//    if (d1 >= 0){
-//        min_1_E = MIN_1_E;
-//        min_1_d = MIN_1_D;
-//        min_2_E = MIN_2_E;
-//        min_2_d = MIN_2_D;
-//        u = u - d1;
-//        disp_max_valid = min(63, WIDTH - u - 5);
-//        I2_block_addr_1 = I2_desc_shared + 16 * u;
-//        I2_block_addr_2 = I2_desc_shared + 16 * u + 320 * 16;
-
-//        for(int16_t d = 0; d <= disp_max_valid; d++){
-//            u_wrap = u + d;
-//            I1_block_addr_1 = I1_desc_shared + 16 * u_wrap;
-//            I1_block_addr_2 = I1_desc_shared + 16 * u_wrap + 320 * 16;
-//            result1 = computeMatchEnergy1(I1_block_addr_1, I2_block_addr_1, DESC_OFFSET_1);
-//            result2 = computeMatchEnergy1(I1_block_addr_1, I2_block_addr_1, DESC_OFFSET_2);
-//            result3 = computeMatchEnergy1(I1_block_addr_2, I2_block_addr_2, DESC_OFFSET_3);
-//            result4 = computeMatchEnergy1(I1_block_addr_2, I2_block_addr_2, DESC_OFFSET_4);
-
-//            sum = result1 + result2 + result3 + result4;
-
-//            if (sum<min_1_E) {
-//                min_2_E = min_1_E;
-//                min_2_d = min_1_d;
-//                min_1_E = sum;
-//                min_1_d = d;
-//            }
-//            else if (sum<min_2_E) {
-//                min_2_E = sum;
-//                min_2_d = d;
-//            }
-//        }
-
-//        if (min_1_d>=0 && min_2_d>=0 && (float)min_1_E < 0.85*(float)min_2_E)
-//          d2 =  min_1_d;
-//        if( d2 >= 0 && abs(d2 - d1) <= 2 )
-//            D_can[x + y * D_can_width] = d1;
-//    }
-//    sum = 0;
-//#pragma unroll
-//    for (int32_t i=0; i<16; i++)
-//      sum += abs((int32_t)(*(I1_block_addr_1+i))-128);
-//    if (sum<10)
-//      D_can[x + y * D_can_width] = -1;
 
 
 }
@@ -558,56 +585,20 @@ vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_de
     // create matrix for saving disparity candidates
     int32_t D_can_width = 60;  //[15,310] => 60
     int32_t D_can_height = 48; //[5, 230] => 46
-//    for (int32_t u = 0; u<WIDTH; u += D_candidate_stepsize) D_can_width++;  //64
-//    for (int32_t v = 0; v<HEIGH; v += D_candidate_stepsize) D_can_height++; //58
 
-
-
-    int16_t* D_can_gpu;
-    int16_t* sum_gpu;
-    int16_t* D_can_cpu = (int16_t*)malloc(D_can_width*D_can_height * sizeof(int16_t)); //143 * 99
-
-    cudaMalloc((void **)&D_can_gpu, D_can_width*D_can_height * sizeof(int16_t));
+    cudaMemset(D_sup_g, -1, D_can_width*D_can_height * sizeof(int8_t));
 
     dim3 threads(BLOCKX, BLOCKY);
     dim3 grid(GRIDX, GRIDY);
-
-
-//    dim3 threads(16, 32);
-//    dim3 grid(iDivUp(D_can_width, 16), iDivUp(D_can_height, 32));
-
     cudaStream_t stream1, stream2;
     cudaStreamCreate(&stream1);
     cudaStreamCreate(&stream2);
 
-    cudaMemset(D_can_gpu, -1, D_can_width*D_can_height * sizeof(int16_t));
-
-
-
     cudaFuncSetCacheConfig(sptMathKernel,cudaFuncCachePreferShared);
 
-    cudaDeviceSynchronize();
-//    sptMathKernel << <grid, threads, 0, stream1>> > (D_can_width, D_can_height, D_can_gpu, I_desc1, I_desc2);
     sptMathKernel << <grid, threads, 0, stream1>> > (D_can_width, D_can_height, D_sup_g, I_desc1, I_desc2);
-    cudaMemcpy(D_can_cpu, D_can_gpu, D_can_width*D_can_height * sizeof(int16_t), cudaMemcpyDeviceToHost);
+    cudaDeviceSynchronize();
 
-
-    // remove inconsistent support points
-//    removeInconsistentSupportPoints1<< <grid, threads >> > (D_can_gpu, D_can_width, D_can_height);
-
-//    removeRedundantSupportPoints1 << <grid, threads >> > (D_can_gpu, D_can_width, D_can_height, 5, 1, true);
-//    removeRedundantSupportPoints1 << <grid, threads >> > (D_can_gpu, D_can_width, D_can_height, 5, 1, false);
-
-//    cudaMemcpy(D_can_cpu, D_can_gpu, D_can_width*D_can_height * sizeof(int16_t), cudaMemcpyDeviceToHost);
-
-    // move support points from image representation into a vector representation
-//    vector<Elas::support_pt> p_support;
-//    for (int32_t u_can = 0; u_can<D_can_width; u_can++)
-//        for (int32_t v_can = 0; v_can<D_can_height; v_can++)
-//            if (*(D_can_cpu + u_can + v_can * D_can_width) >= 0)
-//                p_support.push_back(Elas::support_pt((u_can + 3)*D_candidate_stepsize,
-//                    (v_can + 1) * D_candidate_stepsize,
-//                    *(D_can_cpu + u_can + v_can * D_can_width)));
     vector<Elas::support_pt> p_support;
     for (int32_t u_can = 0; u_can<D_can_width; u_can++)
         for (int32_t v_can = 0; v_can<D_can_height; v_can++)
@@ -617,12 +608,6 @@ vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_de
                     *(D_sup_c+ u_can + v_can * D_can_width)));
 
 
-//    if (param.add_corners)
-//        addCornerSupportPoints(p_support, WIDTH, HEIGH);
-
-    // free memory
-    free(D_can_cpu);
-    // return support point vector
     return p_support;
 }
 
@@ -653,9 +638,6 @@ __global__ void Triangle_Match1(Elas::triangle* tri, int32_t* disparity_grid,\
            I1_desc_share[u + i*320] = I1_desc[v * 320*16 + u + i*320];
            I2_desc_share[u + i*320 ] = I2_desc[v * 320*16 + u + i*320];
         }
-
-
-
 
     __syncthreads();
 
@@ -967,8 +949,7 @@ void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector
 //    printf("b = %d\n", sizeof(Elas::triangle) );
 
     int32_t plane_radius = 2; //(int32_t)max((float)ceil(param.sigma*param.sradius), (float)2.0);
-    printf("ppppppp = %d\n", plane_radius);
-    //plane_radius = 2;
+
     t1 = clock();
     cudaMemcpy(P_gpu, P_g, sizeof(int32_t) * (grid_dims[0] - 1), cudaMemcpyHostToDevice);
     t2 = clock();
@@ -978,7 +959,7 @@ void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector
     dim3 threads(320, 1);
     dim3 grid(iDivUp(width, (threads.x)), iDivUp(height,threads.y));
 
-    cudaDeviceSynchronize();
+//    cudaDeviceSynchronize();
 
     //printf("goin Triangle_match kernel\n");
     t1 = clock();
@@ -992,7 +973,7 @@ void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector
     t2 = clock();
     //printf("Triangle_Match1 : %ldms\n", (t2 - t1)/1000);
 
-  cudaDeviceSynchronize();
+//  cudaDeviceSynchronize();
 
 
 
