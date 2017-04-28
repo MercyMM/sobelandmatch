@@ -54,6 +54,9 @@ desc_2(width,height,width)
     D_sup_g         = (int8_t*)HostMal((void**)&D_sup_c, D_can_width*D_can_height * sizeof(int8_t) );
 
     memset(D_sup_c, -1, D_can_width*D_can_height * sizeof(int8_t));
+//    D1_data_g       = (float*)HostMal((void**)&D1_data_c, width * height * sizeof(float) * 3);
+//    D2_data_g       = (float*)HostMal((void**)&D2_data_c, width * height * sizeof(float) * 3);
+
     D1_data_g       = (float*)HostMal((void**)&D1_data_c, width * height * sizeof(float));
     D2_data_g       = (float*)HostMal((void**)&D2_data_c, width * height * sizeof(float));
 
@@ -74,28 +77,29 @@ desc_2(width,height,width)
 
 
 
-void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t* dims)
+void Elas::process (uint8_t* I1_,uint8_t* I2_)
 {
 
       struct timeval start, end;
       clock_t t1,t2;
-      width  = dims[0];
-      height = dims[1];
+      width  = WIDTH;// dims[0];
+      height = HEIGH; // dims[1];
       bpl    = width + 15-(width-1)%16;
       double timeuse;
       I1 = I1_;
       I2 = I2_;
 
       gettimeofday(&start, NULL);
-      desc_1.compute(I1,width,height,bpl,param.subsampling);
-      desc_2.compute(I2,width,height,bpl,param.subsampling);
+      desc_1.compute(I1_,width,height,bpl,param.subsampling);
+      desc_2.compute(I2_,width,height,bpl,param.subsampling);
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
       cout << "two desc: " << timeuse/1000 << "ms" <<endl;
 
       gettimeofday(&start, NULL);
       vector<support_pt> p_support = computeSupportMatches_g(desc_1.I_desc_g, desc_2.I_desc_g,  D_sup_c, D_sup_g);
-//      vector<support_pt> p_support = computeSupportMatches(desc_1.I_desc, desc_2.I_desc);
+      memset(D_sup_c, -1, D_CAN_WIDTH*D_CAN_HEIGH * sizeof(int8_t));
+     //      vector<support_pt> p_support = computeSupportMatches(desc_1.I_desc, desc_2.I_desc);
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
       cout <<"computesuppportmatch: "<< timeuse/1000 << "ms. " ; cout << "support size: "<<p_support.size() <<endl;
@@ -136,11 +140,19 @@ void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t*
 
 
       gettimeofday(&start, NULL);
-      cuda_computeD(disp_grid_1_g, disp_grid_1_g, p_support, tri_1, tri_2, D1, D2,\
+      cuda_computeD(disp_grid_1_g, disp_grid_1_g, p_support, tri_1, tri_2, D1_data_g, D2_data_g,\
                     desc_1.I_desc_g, desc_2.I_desc_g, P_g, tp1_g, tp2_g, tp1_c, tp2_c );
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
       cout <<"cuda_computeD: "<< timeuse/1000 << "ms" <<endl;
+
+
+//      gettimeofday(&start, NULL);
+//      leftRightConsistencyCheck(D1_data_c, D2_data_c);
+//      gettimeofday(&end, NULL);
+//      timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+//      cout <<"leftRightConsistencyCheck: "<< timeuse/1000 << "ms" <<endl;
+
 
 }
 
@@ -858,12 +870,12 @@ vector<Elas::triangle> Elas::computeDelaunayTriangulation (vector<support_pt> p_
   return tri;
 }
 
-void Elas::computeDisparityPlanes (vector<support_pt> p_support,vector<triangle> &tri,int32_t right_image) {
+void Elas::computeDisparityPlanes (vector<support_pt> p_support, vector<triangle> &tri, int32_t right_image) {
 
   // init matrices
   Matrix A(3,3);
   Matrix b(3,1);
-//  printf("tri.size: %d\n", tri.size());
+  printf("tri.size: %d\n", tri.size());
   // for all triangles do
   for (int32_t i=0; i<tri.size(); i++) {
     

@@ -14,7 +14,7 @@ OBJS = $(SRCS:.cpp=.o)
 
 CC = g++
 
-CXXFLAGS = -mfpu=neon -fpermissive -w -g
+CXXFLAGS = -mfpu=neon -fpermissive -w -O4
 LDFLAGS = `pkg-config --cflags --libs opencv` 
 
 all : bin/$(TARGET)
@@ -43,3 +43,6 @@ objs/triangle.o:triangle.cpp
 
 objs/vibe.o:vibe.cpp
 	$(CC) $(CXXFLAGS) -o $@ -c $<
+
+clean:
+	rm objs/main.o objs/triangle.o objs/elas.o objs/matrix.o objs/descriptor.o

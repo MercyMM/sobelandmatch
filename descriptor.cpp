@@ -230,9 +230,9 @@ extern int __createDesc_gpu(uint8_t* I_desc, uint8_t* I_du, uint8_t* I_dv );
 
 Descriptor::Descriptor(int32_t width,int32_t height,int32_t bpl) {
 //        I_desc        = (uint8_t*)aligned_alloc(16, 16*width*height*sizeof(uint8_t));
-    I_desc_g = (uint8_t*) HostMal(&I_desc, 16*width*height*sizeof(uint8_t));
-    I_du_g = (uint8_t*) HostMal((void**)&I_du, bpl*height*sizeof(uint8_t));
-    I_dv_g = (uint8_t*) HostMal((void**)&I_dv, bpl*height*sizeof(uint8_t));
+    I_desc_g    = (uint8_t*) HostMal(&I_desc, 16*width*height*sizeof(uint8_t));
+    I_du_g      = (uint8_t*) HostMal((void**)&I_du, bpl*height*sizeof(uint8_t));
+    I_dv_g      = (uint8_t*) HostMal((void**)&I_dv, bpl*height*sizeof(uint8_t));
 }
 
 void Descriptor::compute(uint8_t* I, int32_t width,int32_t height,int32_t bpl,bool half_resolution)
@@ -243,12 +243,18 @@ void Descriptor::compute(uint8_t* I, int32_t width,int32_t height,int32_t bpl,bo
     sobel3x3(I,I_du,I_dv,bpl,height);
     t2 = clock();
 //    cout << "sobel3x3 " << (t2-t1)/CLK_TCK << "ms" <<endl;
+//    for(int i = 3200; i < 3232; i ++)
+//        printf("%d ", *(I_du + i));
 
     t1=clock();
 //    createDescriptor(I_du, I_dv, width, height, bpl, 1);
     __createDesc_gpu(I_desc_g, I_du_g, I_dv_g);
     t2 = clock();
 //    cout << "createDescriptor " << (t2-t1)/CLK_TCK << "ms" <<endl;
+//    printf("after I_desc_g:\n");
+//    for(int i = 32000; i < 32032; i ++)
+//        printf("%d ", *(I_desc + i));
+//    printf("\n");
 
 
 //      free(I_du);
