@@ -30,6 +30,7 @@ struct triangle {
 
 
 extern void* HostMal(void **p, long size);
+extern void cudaFreeHost_cpuaa(void *p);
 extern void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector<Elas::support_pt> &p_support, \
               vector<Elas::triangle> &tri_1, vector<Elas::triangle> &tri_2, \
               float* D1, float* D2,uint8_t* I1, uint8_t* I2, int8_t* P_g,\
@@ -37,7 +38,9 @@ extern void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2, 
 
 //extern vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_desc2) ;
 extern vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I1_desc, uint8_t* I2_desc,\
-                                                 int8_t* D_sup_c, int8_t* D_sup_g);
+                                  int8_t* D_sup_c, int8_t* D_sup_g);
+
+extern int ConvertD2Z(float* D1_g,  float* PointXYZ);
 
 #define GRID_WIDTH      16
 #define GRID_HEIGH      12
@@ -48,11 +51,11 @@ extern vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I1_desc, uint8_
 
 Elas::Elas(parameters param, int32_t width, int32_t height, int32_t D_can_width, int32_t D_can_height)
 :param(param),desc_1(width, height, width),\
-desc_2(width,height,width)
+  desc_2(width,height,width)
 {
+//
 
     D_sup_g         = (int8_t*)HostMal((void**)&D_sup_c, D_can_width*D_can_height * sizeof(int8_t) );
-
     memset(D_sup_c, -1, D_can_width*D_can_height * sizeof(int8_t));
 //    D1_data_g       = (float*)HostMal((void**)&D1_data_c, width * height * sizeof(float) * 3);
 //    D2_data_g       = (float*)HostMal((void**)&D2_data_c, width * height * sizeof(float) * 3);
@@ -67,10 +70,11 @@ desc_2(width,height,width)
 
     P_g             = (int8_t*)HostMal((void**)&P_c, 64 * sizeof(int8_t));
 
-    int8_t temp[] = {-14,-9,-2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,64};
+    int8_t temp[] = {-14,-9,-2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     for(int i = 0 ; i < 64; i++){
         P_c[i] = temp[i];
     }
+   cloud_g         = (point*)HostMal((void**)&cloud_c, width * height * sizeof(float) * 3 );
 }
 
 
@@ -91,10 +95,15 @@ void Elas::process (uint8_t* I1_,uint8_t* I2_)
 
       gettimeofday(&start, NULL);
       desc_1.compute(I1_,width,height,bpl,param.subsampling);
+      gettimeofday(&end, NULL);
+      timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+      cout << "two desc1: " << timeuse/1000 << "ms" <<endl;
+
+            gettimeofday(&start, NULL);
       desc_2.compute(I2_,width,height,bpl,param.subsampling);
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
-      cout << "two desc: " << timeuse/1000 << "ms" <<endl;
+      cout << "two desc2: " << timeuse/1000 << "ms" <<endl;
 
       gettimeofday(&start, NULL);
       vector<support_pt> p_support = computeSupportMatches_g(desc_1.I_desc_g, desc_2.I_desc_g,  D_sup_c, D_sup_g);
@@ -147,12 +156,17 @@ void Elas::process (uint8_t* I1_,uint8_t* I2_)
       cout <<"cuda_computeD: "<< timeuse/1000 << "ms" <<endl;
 
 
-//      gettimeofday(&start, NULL);
-//      leftRightConsistencyCheck(D1_data_c, D2_data_c);
-//      gettimeofday(&end, NULL);
-//      timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
-//      cout <<"leftRightConsistencyCheck: "<< timeuse/1000 << "ms" <<endl;
+      gettimeofday(&start, NULL);
+      leftRightConsistencyCheck(D1_data_c, D2_data_c);
+      gettimeofday(&end, NULL);
+      timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+      cout <<"leftRightConsistencyCheck: "<< timeuse/1000 << "ms" <<endl;
 
+      gettimeofday(&start, NULL);
+      ConvertD2Z(D1_data_g, (float*)cloud_g);
+      gettimeofday(&end, NULL);
+      timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+      cout <<"ConvertD2Z: "<< timeuse/1000 << "ms" <<endl;
 
 }
 
@@ -571,7 +585,7 @@ inline int16_t Elas::computeMatchingDisparity (const int32_t &u,const int32_t &v
 */
 
 /*****************************************************************************/
-/*******************openclº¯Êý£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡************************/
+/*******************opencl\BA\AF\CA\FD\A3\A1\A3\A1\A3\A1\A3\A1\A3\A1\A3\A1\A3\A1\A3\A1\A3\A1\A3\A1\A3\A1\A3\A1************************/
 /*****************************************************************************/
 /*
 vector<Elas::support_pt> Elas::cl_sobelandcomputeSupportMatches (uint8_t* I1_desc,uint8_t* I2_desc)
@@ -1197,12 +1211,12 @@ void Elas::computeDisparity(vector<support_pt> p_support,vector<triangle> tri,in
     
     // get plane parameters
     uint32_t p_i = i*3;
-    if (!right_image) {    //×óÍ¼Ïñ
+    if (!right_image) {    //\D7\F3Í¼\CF\F1
       plane_a = tri[i].t1a;
       plane_b = tri[i].t1b;
       plane_c = tri[i].t1c;
       plane_d = tri[i].t2a;
-    } else {               //ÓÒÍ¼Ïñ
+    } else {               //\D3\D2Í¼\CF\F1
       plane_a = tri[i].t2a;
       plane_b = tri[i].t2b;
       plane_c = tri[i].t2c;
@@ -1216,11 +1230,11 @@ void Elas::computeDisparity(vector<support_pt> p_support,vector<triangle> tri,in
 
     // sort triangle corners wrt. u (ascending)    
     float tri_u[3];
-    if (!right_image) {     //×óÍ¼Ïñ
+    if (!right_image) {     //\D7\F3Í¼\CF\F1
       tri_u[0] = p_support[c1].u;
       tri_u[1] = p_support[c2].u;
       tri_u[2] = p_support[c3].u;
-    } else {                //ÓÒÍ¼Ïñ
+    } else {                //\D3\D2Í¼\CF\F1
       tri_u[0] = p_support[c1].u-p_support[c1].d;
       tri_u[1] = p_support[c2].u-p_support[c2].d;
       tri_u[2] = p_support[c3].u-p_support[c3].d;
@@ -1518,7 +1532,7 @@ void Elas::gapInterpolation(float* D) {
   // discontinuity threshold
   float discon_threshold = 3.0;
   
-  // declare loop variables   ÉùÃ÷Ñ­»·±äÁ¿
+  // declare loop variables   \C9\F9\C3\F7Ñ­\BB\B7\B1\E4\C1\BF
   int32_t count,addr,v_first,v_last,u_first,u_last;
   float   d1,d2,d_ipol;
   

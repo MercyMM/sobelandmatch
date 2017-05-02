@@ -6,6 +6,8 @@
 #include <fstream>
 #include <stdio.h>
 #include <time.h>
+#include <sys/time.h>
+
 using namespace std;
 
 const double CLK_TCK = 1000.0;
@@ -238,19 +240,25 @@ Descriptor::Descriptor(int32_t width,int32_t height,int32_t bpl) {
 void Descriptor::compute(uint8_t* I, int32_t width,int32_t height,int32_t bpl,bool half_resolution)
 {
 
-    clock_t t1,t2;
-    t1=clock();
+//    clock_t t1,t2;
+//    t1=clock();
+    struct timeval start, end;
+    double timeuse;
+    gettimeofday(&start, NULL);
     sobel3x3(I,I_du,I_dv,bpl,height);
-    t2 = clock();
-//    cout << "sobel3x3 " << (t2-t1)/CLK_TCK << "ms" <<endl;
-//    for(int i = 3200; i < 3232; i ++)
-//        printf("%d ", *(I_du + i));
+    gettimeofday(&end, NULL);
+    timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+    cout << "s: " << timeuse/1000 << "ms" <<endl;
 
-    t1=clock();
-//    createDescriptor(I_du, I_dv, width, height, bpl, 1);
+    gettimeofday(&start, NULL);
     __createDesc_gpu(I_desc_g, I_du_g, I_dv_g);
-    t2 = clock();
+//    t2 = clock();
 //    cout << "createDescriptor " << (t2-t1)/CLK_TCK << "ms" <<endl;
+    gettimeofday(&end, NULL);
+    timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+    cout << "d: " << timeuse/1000 << "ms" <<endl;
+
+
 //    printf("after I_desc_g:\n");
 //    for(int i = 32000; i < 32032; i ++)
 //        printf("%d ", *(I_desc + i));
@@ -263,10 +271,15 @@ void Descriptor::compute(uint8_t* I, int32_t width,int32_t height,int32_t bpl,bo
 //    cudaFreeHost_cpuaa(I_dv);
 }
 
+extern void allocFreeCount();
 
 Descriptor::~Descriptor() {
-//    free(I_desc);
-//    cudaFreeHost_cpuaa(I_desc);
+    cudaFreeHost_cpuaa(I_desc);
+    cudaFreeHost_cpuaa(I_du);
+    cudaFreeHost_cpuaa(I_dv);
+ //   std::cout<<"Descriptor deconstructor" <<std::endl;
+ //   allocFreeCount();
+
 }
 
 void Descriptor::createDescriptor (uint8_t* I_du,uint8_t* I_dv,int32_t width,int32_t height,int32_t bpl,bool half_resolution) {

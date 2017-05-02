@@ -28,11 +28,12 @@ class Descriptor {
 public:
 
   // constructor creates filters
-  Descriptor(int32_t width,int32_t height,int32_t bpl);
+    Descriptor(){}
+  Descriptor(int32_t width, int32_t height, int32_t bpl);
   
   // deconstructor releases memory
   ~Descriptor();
-    int a(){return 1;};
+
   void compute(uint8_t* I,int32_t width,int32_t height,int32_t bpl,bool half_resolution);
 
   // descriptors accessible from outside

@@ -29,7 +29,7 @@
 #ifdef PROFILE
 #include "timer.h"
 #endif
-
+extern void cudaFreeHost_cpuaa(void *p);
 class Elas {
   
 public:
@@ -127,7 +127,13 @@ public:
     }
   };
 
+  struct point{
+      float x;
+      float y;
+      float z;
+  };
 
+  point *cloud_g, *cloud_c;
   Descriptor desc_1;
   Descriptor desc_2;
 //  int8_t *D_can_g, *D_can_c;
@@ -139,11 +145,23 @@ public:
   int8_t *tp1_c, *tp1_g;
   int8_t *tp2_c, *tp2_g;
   int8_t *P_g, *P_c;
+
   // constructor, input: parameters
   Elas (parameters param, int32_t width, int32_t height, int32_t,int32_t);
 
   // deconstructor
-  ~Elas () {}  
+  ~Elas () {
+      cudaFreeHost_cpuaa(D_sup_c);
+      cudaFreeHost_cpuaa(D1_data_c);
+      cudaFreeHost_cpuaa(D2_data_c);
+      cudaFreeHost_cpuaa(disp_grid_1_c);
+      cudaFreeHost_cpuaa(disp_grid_2_c);
+      cudaFreeHost_cpuaa(tp1_c);
+      cudaFreeHost_cpuaa(tp2_c);
+      cudaFreeHost_cpuaa(P_c);
+      cudaFreeHost_cpuaa(cloud_c);
+//      std::cout<< "elas deconstructor"<<std::endl;
+  }
 
   struct support_pt {
     int32_t u;
