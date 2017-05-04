@@ -144,11 +144,11 @@ int __createDesc_gpu(uint8_t* I_desc, uint8_t* I_du_g, uint8_t* I_dv_g )
 {
     dim3 threads(WIDTH - 6 , 1);
     dim3 grid( 1, HEIGH - 6 );
-    cudaDeviceSynchronize();
+//    cudaDeviceSynchronize();
     createDesc_gpu_kernel<<<grid, threads, 0 >>>(I_desc, I_du_g, I_dv_g );
 //    cudaError_t err = cudaGetLastError();
 //    printf("cuda error: %s\n", cudaGetErrorString(err));
-    cudaDeviceSynchronize();
+//    cudaDeviceSynchronize(); //2.88 - 0.19
 
 }
 
@@ -553,6 +553,7 @@ vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_de
 
     cudaFuncSetCacheConfig(sptMathKernel,cudaFuncCachePreferShared);
     //compute support
+    cudaDeviceSynchronize();    //
     sptMathKernel << <grid, threads, 0, stream1>> > (D_can_width, D_can_height, D_sup_g, I_desc1, I_desc2);
     cudaDeviceSynchronize();    //13ms
 
@@ -589,7 +590,7 @@ __global__ void Convert(float *D_g, float *cloud_g)
 
         w = 0.006669723997311648 * dis;
         x = (float)((u - 161.2100334167481) / w);
-        y = (float)((v - 119.9240913391113) / w);
+        y = (float)((219 - v - 119.9240913391113) / w); //has bug
         z = (float)(241.57918 / w);
 
     *(cloud_g + (u + v * WIDTH) * 3) = x;
@@ -625,14 +626,14 @@ int ConvertD2Z(float* D1_g,  float* cloud_g)
 /****
  * 5. cuda_computeD
  ***/
-
+int tri_size = 0;
 __constant__ int32_t grid_dims_g[3] = {65, WIDTH/GRID_SIZE, HEIGH/GRID_SIZE} ;
 __constant__ int8_t temp[] = {-14,-9,-2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 __global__ void Triangle_Match1(Elas::triangle* tri, int32_t* disparity_grid,\
                                 uint8_t* I1_desc, uint8_t* I2_desc, int8_t* P, \
                                 int32_t plane_radius, bool right_image, float* D,  \
-                                int8_t* tp)
+                                int8_t* tp, int tri_size)
 {
 
     float plane_a = 0, plane_b = 0, plane_c = 0, plane_d = 0;
@@ -651,6 +652,10 @@ __global__ void Triangle_Match1(Elas::triangle* tri, int32_t* disparity_grid,\
     __syncthreads();
 
     id = tp[u + v * WIDTH];
+
+        if(id > tri_size)
+            printf("\nid out %d\n", id);
+
     plane_a = tri[id].t1a;
     plane_b = tri[id].t1b;
     plane_c = tri[id].t1c;
@@ -870,6 +875,7 @@ void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector
     int32_t P_SUPPORT_SIZE = p_support.size();
     int32_t TRI_SIZE1 = tri_1.size();
     int32_t TRI_SIZE2 = tri_2.size();
+    tri_size = TRI_SIZE1;
 
     int8_t* tp1_cpu = tp1_c;
     int8_t* tp2_cpu = tp2_c;
@@ -907,10 +913,11 @@ void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector
 
     printf("goin Triangle_match kernel\n");
     Triangle_Match1 << <grid, threads, 0>> > (tri_gpu_1, disparity_grid_1, \
-                  I1, I2, P_g, plane_radius, 0, D1, tp1_gpu);
+                  I1, I2, P_g, plane_radius, 0, D1, tp1_gpu, tri_size);
 
+    tri_size = TRI_SIZE2;
     Triangle_Match1 << <grid, threads, 0>> > (tri_gpu_2, disparity_grid_2, \
-                  I2, I1, P_g, plane_radius, 1, D2, tp2_gpu);
+                  I2, I1, P_g, plane_radius, 1, D2, tp2_gpu, tri_size);
     err = cudaGetLastError();
     if(0 != err) printf("Triangle_Match1 cuda error: %s\n", cudaGetErrorString(err));
 
