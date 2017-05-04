@@ -1,13 +1,11 @@
 #include <stdio.h>
 #include <unistd.h>
-// #include <tchar.h>
 #include "opencv/cv.h"
 #include "opencv/cxmisc.h"
 #include "opencv/highgui.h"
 #include "opencv/cvaux.h"
 #include <vector>
 #include <string>
-//#include "clelas.h"
 #include <algorithm>
 #include <stdio.h>
 #include <ctype.h>
@@ -15,22 +13,18 @@
 #include "elas.h"
 #include <sstream>
 #include <iomanip>
-//#include <CL/cl.h>
 #include <fstream>
 #include <sstream>
 #include <string.h>
-//#include "cl_user.h"
 #include <arm_neon.h>
 #include <sys/time.h>
 
 
 #define WIDTH 320
 #define HEIGH 240
-//#define HEIGH 120
 
 using namespace std;
 using namespace cv;
-
 
 
 typedef struct 
@@ -39,6 +33,13 @@ typedef struct
 	float x;
 	float y;
 }speed;
+
+struct obs_point
+{
+    float x;
+    float y;
+    int num;
+};
 
 struct point
 {
@@ -71,7 +72,7 @@ int Evaluation();
 //65个方向
 //预测四秒后的位置
 #define STOPDIST 1
-#define DIRECTIONS 17
+#define DIRECTIONS 9
 #define PREDICTT 4 
 
 #define DEL_DIS		0.5
@@ -82,25 +83,18 @@ int Evaluation();
 #define DIST	0.2
 #define VEL		0.1
 
-speed SpeedWindow[] = 
+
+speed SpeedWindow[] =
 {
-   {64, 0.44, 0.90},
-   {56, 0.56, 0.83},
-   {48, 0.67, 0.74},
-   {40, 0.77, 0.64},
-   {32, 0.85, 0.53},
-   {24, 0.91, 0.41},
-   {16, 0.96, 0.28},
-   {8, 0.99, 0.14},
-   {0, 1.00, 0.00},
-   {-8, 0.99, -0.14},
-   {-16, 0.96, -0.28},
-   {-24, 0.91, -0.41},
-   {-32, 0.85, -0.53},
-   {-40, 0.77, -0.64},
-   {-48, 0.67, -0.74},
-   {-56, 0.56, -0.83},
-   {-64, 0.44, -0.90}
+    {58, 0.85, 0.53}, // 4
+    {66, 0.91, 0.41}, // 5
+    {74, 0.96, 0.28}, // 6
+    {82, 0.99, 0.14}, // 7
+    {90, 1.00, 0.00}, // 8
+    {98, 0.99, -0.14}, // 9
+    {106, 0.96, -0.28}, // 10
+    {114, 0.91, -0.41}, // 11
+    {122, 0.85, -0.53}
 };
 
 point predict[DIRECTIONS];
@@ -125,120 +119,40 @@ int main(int argc, char** argv)
     param.postprocess_only_left = true;
     Elas elas(param, (int32_t)WIDTH, (int32_t)HEIGH, D_can_width, D_can_height );
 
-//    initCudaMalloc();
-//    printf("initcudamalloc over\n");
-
-
     const int32_t dims[3] = {WIDTH,HEIGH,WIDTH}; // bytes per line = width
 
-
-//    cvNamedWindow("capture_left");
-//    cvNamedWindow("capture_right");
-//    cvNamedWindow("capture_depth");
-    CvCapture* capture_left = cvCreateFileCapture("../video/result_left1.avi");
-    CvCapture* capture_right = cvCreateFileCapture("../video/result_right1.avi");
+    CvCapture* capture_left = cvCreateFileCapture("../video/result_left3.avi");
+    CvCapture* capture_right = cvCreateFileCapture("../video/result_right3.avi");
 
     struct timeval start, end;
     double timeuse;
     double vmin, vmax, alpha;
-
-//    IplImage* img1 = cvLoadImage("left4.png",0);
-//    IplImage* img2 = cvLoadImage("right4.png",0);
     IplImage *img1 , *img2 ;
     IplImage *imgBak1, *imgBak2;
     imgBak1 = cvCreateImage(cvSize(WIDTH, HEIGH), IPL_DEPTH_8U, 1);
     imgBak2 = cvCreateImage(cvSize(WIDTH, HEIGH), IPL_DEPTH_8U, 1);
     char key ;
     uint8_t *I1, *I2;
-//    cvSetCaptureProperty(capture_left, CV_CAP_PROP_POS_FRAMES, 220);
-//    cvSetCaptureProperty(capture_right, CV_CAP_PROP_POS_FRAMES, 220);
+    cvSetCaptureProperty(capture_left, CV_CAP_PROP_POS_FRAMES, 50);
+    cvSetCaptureProperty(capture_right, CV_CAP_PROP_POS_FRAMES, 50);
 //    printf("aaaaaa\n");
-string left_name, right_name;
+    string left_name, right_name;
     string left = "left";
-    string right = "right";//        cvSaveImage(left_name.c_str(), img1);
-    //        cvSaveImage(right_name.c_str(), img2);
-    //        printf("save\n");
-    //        name_num++;
+    string right = "right";
     char name[30] ;
     int name_num = 0;
     while(1)
     {
-        sprintf(name, "./picture1/left_%d.png", name_num);
-        left_name = name;
-        sprintf(name, "./picture1/right_%d.png", name_num);
-        right_name = name;
-//#ifdef LOAD_PIC
-//        img1 = cvLoadImage(left_name.c_str(), 0);
-//        img2 = cvLoadImage(right_name.c_str(), 0);
-        name_num++;
-//        cvShowImage("capture_left", img1);
-//#endif
-//        cout<< left_name;
-//        cout << right_name;
-//        key = getchar();
-//        name_num ++;
-//#ifdef SAVE_PIC
-//        img1 = cvQueryFrame(capture_left);
-//        img2 = cvQueryFrame(capture_right);
-//        cvShowImage("picture", img1);
-
-//        key = cvWaitKey(5000);
-
-
-//        if('s' == key){
-//            cvSaveImage(left_name.c_str(), img1);
-//            cvSaveImage(right_name.c_str(), img2);
-//            name_num++;
-//        }else if('t' == key){
-//            return;
-//        }
-//        printf("start\n");
-//        cvSaveImage(left_name.c_str(), img1);
-//        cvSaveImage(right_name.c_str(), img2);
-//        printf("save\n");
-//        name_num++;
-
-//    }
-//#endif
-//        sleep(1);
-//        printf("load\n");
-//        img1 = cvLoadImage("a1-temp-l.png", 0);
-//        img2 = cvLoadImage("a1-temp-r.png", 0);
-
-//            key =  cvWaitKey(0);
-//            if(key == 'q')
-//                return;
-//    }
-        img1 = cvLoadImage("./picture/left_58.png",0);
-        img2 = cvLoadImage("./picture/right_58.png",0);
-
-//        cout<<"width,heigth,imageSize "<<img1->width<< "  "<< img1->height<< "  "<<img1->imageSize<< "  " << img1->widthStep<<endl;
-
- //       cvShowImage("capture_left", img1);
-//        cvShowImage("capture_right", img2);
-//        key = cvWaitKey();
-
-
-
-//        if('c' == key)
-//        {
-//            cvSaveImage("name_left.png", img1);
-//            cvSaveImage("name_right.png", img2);
-
+        img1 = cvLoadImage("./picture3/left_18.png",0);
+        img2 = cvLoadImage("./picture3/right_18.png",0);
 //            img1 = cvLoadImage("left0.png",0);
 //            img2 = cvLoadImage("right0.png",0);
-//        for(int i = 0; i < WIDTH * HEIGH; i++){
-//            *(imgBak1->imageData + i) = *(img1->imageData + i);
-//            *(imgBak2->imageData + i) = *(img2->imageData + i);
-//        }
+
             I1 = (uint8_t*)img1->imageData;
             I2 = (uint8_t*)img2->imageData;
-//        I1 = (uint8_t*)imgBak1->imageData;
-//        I2 = (uint8_t*)imgBak2->imageData;
-//                    cvShowImage("capture_dis222",imgBak1);
+
             gettimeofday(&start, NULL);
             elas.process(I1, I2);
-//            elas.process(imgBak1, imgBak2);
             gettimeofday(&end, NULL);
             timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
             printf("xxxxxxxxxxxxxxxxxxxxxxx elas process use : %fms\n", timeuse/1000);
@@ -250,6 +164,7 @@ string left_name, right_name;
                 float dis = elas.D1_data_c[i];
                 img1f->imageData[i] = (uint8_t)max(255.0*(dis)/63, 0.0);
             }
+            //x axi is cloud_c.z
             for (int32_t i=0; i<WIDTH*HEIGH; i++){
                 float dis = elas.cloud_c[i].z;
                 if ( 10000 < dis)
@@ -261,18 +176,171 @@ string left_name, right_name;
             }
 
 
-//            for(int i = 0; i < WIDTH * HEIGH / 5; i += 5){
-//                float dis = elas.D1_data_c[i * 5];
-//                if ( 10000 < dis)
-//                    dis = 10000;
-//                img3f->imageData[i] = (uint8_t)(dis / 40);
-//            }
-	 cvShowImage("capture_left", img1);
-            cvShowImage("capture_dis1",img1f);
+            gettimeofday(&start, NULL);
+
+        //create obs_arr[320]; zip y from -200 to 200;
+            struct obs_point obs_arr[320] = {0};
+//            for(int v = 19; v < 220; v ++ )
+            for(int v = 82; v < 120; v ++ )
+            {
+                for(int u = 3; u < 313; u ++)
+                {
+                    int index = u + v * WIDTH;
+                    float dis_y = elas.cloud_c[index].y;
+                    float dis_z = elas.cloud_c[index].z;
+                    float dis_x = elas.cloud_c[index].x;
+                    if( dis_y > -200 && dis_y < 200 )
+                    {
+                        if(dis_z < 5000 && dis_z > 0)
+                        {
+                            //add this point to obstacle
+                            struct obs_point *p = &obs_arr[u];
+
+//                            if(124 == u)
+//                                printf("124: (%f, %f) \n", dis_z, dis_x);
+                            if(0 == p->y)
+                            {
+                                p->y = dis_x;
+                            }else
+                            {
+                                p->y = (p->y + dis_x)/2;
+                            }
+                            if(0 == p->x )
+                            {
+                                p->x = dis_z;
+                            }else
+                            {
+                                p->x = min(dis_z , p->x);
+                            }
+                            p->num++;
+                        }else
+                            continue;
+
+                    }else
+                        continue;
+                }
+
+            }
+            gettimeofday(&end, NULL);
+            timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+            printf("obstacle1 : %fms\n", timeuse/1000);
+
+            gettimeofday(&start, NULL);
+            //
+for(int i = 0; i < 320; i++)
+{
+    if(obs_arr[i].num >= 18)
+    {
+//        printf("(%f, %f) %d %d\n", obs_arr[i].x, obs_arr[i].y, obs_arr[i].num, i);
+
+    }
+    else //if(18 > obs_arr[i].num)
+    {
+        obs_arr[i].x = 0;
+        obs_arr[i].y = 0;
+        obs_arr[i].num = 0;
+    }
+}
+
+for(int i = 5; i < 320 - 5; )
+{
+    float base = obs_arr[i].x;
+    int flag = 0;
+    if(obs_arr[i].num < 18)
+    {
+        obs_arr[i].num = 0;
+        i ++;
+        continue;
+    }
+    for(int j = i - 2; j < i + 2; j++)
+    {
+        float cha = abs(obs_arr[j].x - base);
+        if(cha < 500)   //cha < 0.5m
+        {
+            flag++;
+        }
+    }
+    if(flag > 3)        //flag =  4 or 5;
+    {
+        obs_arr[i].num = 1;
+        i += 5;
+    }
+    else
+    {
+        obs_arr[i].num = 0;
+        i ++;
+    }
+}
+
+vector<struct point> obstacle;
+
+for(int i = 0; i < 320; i++)
+{
+    if(1 == obs_arr[i].num)
+    {
+//        printf("obs: (%f, %f) %d %d\n", obs_arr[i].x, obs_arr[i].y, obs_arr[i].num, i);
+        struct point obsN;
+        obsN.x = obs_arr[i].x / 1000;
+        obsN.y = obs_arr[i].y / 1000;
+        obstacle.push_back(obsN);
+    }
+
+}
+//struct point obsN;
+//obsN.x = 2;
+//obsN.y = 0;
+//obstacle.push_back(obsN);
+
+
+
+
+vector<struct point>::iterator iter = obstacle.begin();
+for(; iter != obstacle.end(); iter++){
+    printf("{%f, %f},\n", (*iter).x, (*iter).y);
+}
+printf("\naaa\n");
+
+gettimeofday(&end, NULL);
+timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+printf("obstacle : %fms\n", timeuse/1000);
+
+
+            //y axi is cloud_c.y
+            //create image3
+            for (int32_t i=0; i<WIDTH*HEIGH; i++){
+                float dis = elas.cloud_c[i].y;
+                float dis_z = elas.cloud_c[i].z;
+
+//                img3f->imageData[i] = (uint8_t)(dis);
+
+                if( dis > -200 && dis < 200 )
+                {
+                    if ( 10000 < dis_z)
+                        dis_z = 10000;
+                    if(dis_z <= 0)
+                        img3f->imageData[i] = 255;
+                    else
+                        img3f->imageData[i] = (uint8_t)(dis_z / 40);
+                }
+                else
+                    img3f->imageData[i] = 255;
+                dis += 3000;
+                dis /= 24;
+                if( 255 < dis)
+                        dis = 255;
+                else if( 0 >= dis)
+                    dis = 255;
+//                img3f->imageData[i] = (uint8_t)(dis);
+            }
+
+            cvShowImage("capture_left", img1);
+//            cvShowImage("capture_dis1",img1f);
             cvShowImage("consistency",img2f);
-//            cvShowImage("non_consistency",img3f);
-//cvSaveImage("dist3.png", img3f);
-//cvSaveImage("dist3.png", img2f);
+            cvShowImage("high",img3f);
+            //cvSaveImage("dist3.png", img3f);
+            //cvSaveImage("dist4.png", img2f);
+
+
 
             Mat imgMat(img1f, 0);
             Mat imgColor;
@@ -293,61 +361,14 @@ string left_name, right_name;
 
 
 
-        gettimeofday(&start, NULL);
-        //loop 5 lines;
-        vector<struct point> obstacle;
-        for(int i = 320 * 120 + 20; i < 320 * 121 - 20; i++){
-            float dis = elas.cloud_c[i].z;
-            int num = 1;
-            float obs_z;
-            float obs_x;
-            int j = i;
-            if(dis <= 0)
-                continue;
-            if(dis < 10000 && dis > 0){
-                obs_z = dis;
-                obs_x = elas.cloud_c[j].x;
-                for( j += 1; j < i + 5; j++){
-                    float dis2 = elas.cloud_c[j].z;
-                    if(dis2 < dis && dis2 > 0){
-                        obs_z = dis2;
-                        obs_x = elas.cloud_c[j].x;
-                    }
-                    //printf("%d, %f\n", j - 320*120, dis2);
-                    if( dis2 < 10000 && dis2 > 0)
-                        num++;
-                }
-                //printf("num = %d\n", num);
-            }
-            if(num > 3){
-                struct point Ob;
-                Ob.x = obs_z / 1000;
-                Ob.y = obs_x / 1000;
-                //                    printf("push: %d, %f, %f\n", obs_x, Ob.x, Ob.y);
-                obstacle.push_back(Ob);
-                i = j - 1;
-            }
-        }
-            printf("\n\n\n");
-        vector<struct point>::iterator iter = obstacle.begin();
-        for(; iter != obstacle.end(); iter++){
-            printf("{%f, %f},\n", (*iter).x, (*iter).y);
-        }
-
-//return;
 
 
-
-
-            gettimeofday(&end, NULL);
-            timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
-            printf("DWA : %fms\n", timeuse/1000);
 
             gettimeofday(&start, NULL);
-    point goal = {20,0};
+    point goal = {20,-1};
     int index = DynamicWindowApproach( &obstacle[0], obstacle.size(), goal);
 
-    printf("index = %d\n", index);
+//    printf("index = %d\n", index);
 
             gettimeofday(&end, NULL);
             timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
@@ -380,7 +401,7 @@ int DynamicWindowApproach(point* obstacle, int obs_nums,  point goal)
 	//traj 存放64个移动4s后的飞行器位置
 	GenerateTraj(obstacle, obs_nums);
 
-	printf("NormalizeEval\n");
+//	printf("NormalizeEval\n");
 	// 各评价函数正则化
 	NormalizeEval(goal);
 
@@ -398,7 +419,7 @@ int GenerateTraj(point* obstacle, int obs_nums)
 	float Px, Py;
 
 
-	printf("predict point:\n");
+//	printf("predict point:\n");
 	for(int i = 0; i < DIRECTIONS; i++)
 	{
 		Vx = SpeedWindow[i].x;
@@ -429,7 +450,7 @@ int GenerateTraj(point* obstacle, int obs_nums)
 		}
 		if(1 == flag)
 		{
-			printf("xxxx\n");
+//			printf("xxxx\n");
 			continue;
 		}
 
@@ -439,10 +460,10 @@ int GenerateTraj(point* obstacle, int obs_nums)
 		predict[i].y = Py;
 		// predict[i].p.x = SpeedWindow[i].x * PREDICTT;
 		// predict[i].p.y = SpeedWindow[i].y * PREDICTT;
-		printf("%f, %f  \n",Px, Py);
+//		printf("%f, %f  \n",Px, Py);
 
 	}
-	printf("\n");
+//	printf("\n");
 }
 
 
