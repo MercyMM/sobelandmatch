@@ -34,7 +34,7 @@ extern void cudaFreeHost_cpuaa(void *p);
 extern void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector<Elas::support_pt> &p_support, \
               vector<Elas::triangle> &tri_1, vector<Elas::triangle> &tri_2, \
               float* D1, float* D2,uint8_t* I1, uint8_t* I2, int8_t* P_g,\
-                          int8_t *tp1_g, int8_t* tp2_g, int8_t* tp1_c, int8_t* tp2_c);
+                          int8_t *tp1_g, int8_t* tp2_g, int8_t* tp1_c, int8_t* tp2_c, float* cloud_g);
 
 //extern vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_desc2) ;
 extern vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I1_desc, uint8_t* I2_desc,\
@@ -107,7 +107,14 @@ void Elas::process (uint8_t* I1_,uint8_t* I2_)
 
       gettimeofday(&start, NULL);
       vector<support_pt> p_support = computeSupportMatches_g(desc_1.I_desc_g, desc_2.I_desc_g,  D_sup_c, D_sup_g);
-      memset(D_sup_c, -1, D_CAN_WIDTH*D_CAN_HEIGH * sizeof(int8_t));
+      //computeSupportMatches_g(desc_1.I_desc_g, desc_2.I_desc_g,  D_sup_c, D_sup_g);
+      
+//      vector<support_pt> p_support;
+//	for(int v_can = 0; v_can < 48; v_can++)
+//		for( int u_can = 0; u_can < 60; u_can++)
+//			if(*(D_sup_c + u_can + v_can * 60) >= 0)
+//			p_support.push_back(Elas::support_pt((u_can+3) * 5, (v_can+1) * 5, *(D_sup_c + u_can + v_can * 60)));
+	memset(D_sup_c, -1, D_CAN_WIDTH*D_CAN_HEIGH * sizeof(int8_t));
      //      vector<support_pt> p_support = computeSupportMatches(desc_1.I_desc, desc_2.I_desc);
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
@@ -150,23 +157,23 @@ void Elas::process (uint8_t* I1_,uint8_t* I2_)
 
       gettimeofday(&start, NULL);
       cuda_computeD(disp_grid_1_g, disp_grid_1_g, p_support, tri_1, tri_2, D1_data_g, D2_data_g,\
-                    desc_1.I_desc_g, desc_2.I_desc_g, P_g, tp1_g, tp2_g, tp1_c, tp2_c );
+                    desc_1.I_desc_g, desc_2.I_desc_g, P_g, tp1_g, tp2_g, tp1_c, tp2_c , (float*) cloud_g);
       gettimeofday(&end, NULL);
       timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
       cout <<"cuda_computeD: "<< timeuse/1000 << "ms" <<endl;
 
 
-      gettimeofday(&start, NULL);
-      leftRightConsistencyCheck(D1_data_c, D2_data_c);
-      gettimeofday(&end, NULL);
-      timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
-      cout <<"leftRightConsistencyCheck: "<< timeuse/1000 << "ms" <<endl;
+//      gettimeofday(&start, NULL);
+      //leftRightConsistencyCheck(D1_data_c, D2_data_c);
+//      gettimeofday(&end, NULL);
+//      timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+//      cout <<"leftRightConsistencyCheck: "<< timeuse/1000 << "ms" <<endl;
 
-      gettimeofday(&start, NULL);
-      ConvertD2Z(D1_data_g, (float*)cloud_g);
-      gettimeofday(&end, NULL);
-      timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
-      cout <<"ConvertD2Z: "<< timeuse/1000 << "ms" <<endl;
+//      gettimeofday(&start, NULL);
+//      ConvertD2Z(D1_data_g, (float*)cloud_g);
+//      gettimeofday(&end, NULL);
+//      timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+//      cout <<"ConvertD2Z: "<< timeuse/1000 << "ms" <<endl;
 
 }
 
@@ -1369,7 +1376,7 @@ void Elas::leftRightConsistencyCheck(float* D1,float* D2) {
         addr_warp = getAddressOffsetImage((int32_t)u_warp_1,v,D_width);
 
         // if check failed
-        if (fabs(*(D2_copy+addr_warp)-d1)>param.lr_threshold)
+        if (fabs(*(D2_copy+addr_warp)-d1)>param.lr_threshold) // lr_threshold = 2
           *(D1+addr) = -10;
         
       // set invalid

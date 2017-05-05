@@ -76,7 +76,8 @@ int Evaluation();
 #define PREDICTT 6      //predict time 6s;
 
 #define DEL_DIS		0.5
-#define SAFE_DIS	1    //M100: width 0.51
+#define SAFE_DIS	0.7    //M100: width 0.51; 1m is too far
+//use ./picture3/left18 will no path
 
 //eval func param
 #define HEADING 0.05
@@ -154,11 +155,11 @@ int main(int argc, char** argv)
     int name_num = 0;
     while(1)
     {
-//                img1 = cvLoadImage("./picture3/left_18.png",0);
-//                img2 = cvLoadImage("./picture3/right_18.png",0);
-        img1 = cvLoadImage("left0.png",0);
-        img2 = cvLoadImage("right0.png",0);
-        cvShowImage("x",img1);
+                img1 = cvLoadImage("./picture3/left_18.png",0);
+                img2 = cvLoadImage("./picture3/right_18.png",0);
+//        img1 = cvLoadImage("left0.png",0);
+ //       img2 = cvLoadImage("right0.png",0);
+    //    cvShowImage("x",img1);
 
         I1 = (uint8_t*)img1->imageData;
         I2 = (uint8_t*)img2->imageData;
@@ -169,24 +170,24 @@ int main(int argc, char** argv)
         timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
         printf("xxxxxxxxxxxxxxxxxxxxxxx elas process use : %fms\n", timeuse/1000);
 
-//        struct obs_point obs_arr[320] = {0};
-//        vector<struct point> obstacle;
-//        gettimeofday(&start, NULL);
-//        createObs(elas, obs_arr, &obstacle);
-//        gettimeofday(&end, NULL);
-//        timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
-//        printf("createObs : %fms\n", timeuse/1000);
+        struct obs_point obs_arr[320] = {0};
+        vector<struct point> obstacle;
+        gettimeofday(&start, NULL);
+        createObs(elas, obs_arr, &obstacle);
+        gettimeofday(&end, NULL);
+        timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+        printf("createObs : %fms\n", timeuse/1000);
 
 
 
-//        gettimeofday(&start, NULL);
-//        point goal = {20,-1};
-//        int index = DynamicWindowApproach( &obstacle[0], obstacle.size(), goal);
-//        gettimeofday(&end, NULL);
-//        timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
-//        printf("DWA : %fms\n", timeuse/1000);
+        gettimeofday(&start, NULL);
+        point goal = {20,-1};
+        int index = DynamicWindowApproach( &obstacle[0], obstacle.size(), goal);
+        gettimeofday(&end, NULL);
+        timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
+        printf("DWA : %fms\n", timeuse/1000);
 
-
+return 0;
         key =  cvWaitKey(0);
         if( 'q' == key){
             break;
@@ -516,9 +517,9 @@ void createObs(Elas &elas, struct obs_point *obs_arr, \
     timeuse = 1000000* (end.tv_sec-start.tv_sec) + end.tv_usec-start.tv_usec;
     printf(" create Obs---true : %fms\n", timeuse/1000);
 
-    cvShowImage("y",img1f);
-    cvShowImage("consistency",img2f);
-    cvShowImage("high",img3f);
+//    cvShowImage("y",img1f);
+//    cvShowImage("consistency",img2f);
+//    cvShowImage("high",img3f);
 
 }
 

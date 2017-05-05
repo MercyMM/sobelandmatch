@@ -14,8 +14,8 @@ OBJS = $(SRCS:.cpp=.o)
 
 CC = g++
 
-#CXXFLAGS = -mfpu=neon -fpermissive -w -O3
-CXXFLAGS = -mfpu=neon -fpermissive -w -g
+CXXFLAGS = -mfpu=neon -fpermissive -w -O3
+#CXXFLAGS = -mfpu=neon -fpermissive -w -g
 LDFLAGS = `pkg-config --cflags --libs opencv` 
 
 all : bin/$(TARGET)
