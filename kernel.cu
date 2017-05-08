@@ -25,6 +25,16 @@ using namespace std;
  * */
 
 
+#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__);}
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort = true)
+{
+    if(code != cudaSuccess)
+    {
+        fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+        if(abort) exit(code);
+    }
+}
+
 
 #define WIDTH 320
 #define HEIGH 240
@@ -153,7 +163,11 @@ int __createDesc_gpu(uint8_t* I_desc, uint8_t* I_du_g, uint8_t* I_dv_g )
     dim3 threads(WIDTH - 6 , 1);
     dim3 grid( 1, HEIGH - 6 );
 //    cudaDeviceSynchronize();
+    cout<< "create Desc"<<endl;
     createDesc_gpu_kernel<<<grid, threads, 0 >>>(I_desc, I_du_g, I_dv_g );
+    cout<< "create Desc1"<<endl;
+    gpuErrchk(cudaDeviceSynchronize());
+    cout<< "create Desc2"<<endl;
 //    cudaError_t err = cudaGetLastError();
 //    printf("cuda error: %s\n", cudaGetErrorString(err));
 //    cudaDeviceSynchronize(); //2.88 - 0.19
@@ -551,16 +565,17 @@ vector<Elas::support_pt> computeSupportMatches_g(uint8_t* I_desc1, uint8_t* I_de
     int32_t D_can_width = 60;  //[15,310] => 60
     int32_t D_can_height = 48; //[5, 230] => 46
 
-    cudaMemset(D_sup_g, -1, D_can_width*D_can_height * sizeof(int8_t));
+    gpuErrchk(cudaMemset(D_sup_g, -1, D_can_width*D_can_height * sizeof(int8_t)));
 
     dim3 threads(BLOCKX, BLOCKY);
     dim3 grid(GRIDX, GRIDY);
 
-    cudaFuncSetCacheConfig(sptMathKernel,cudaFuncCachePreferShared);
+        gpuErrchk(cudaFuncSetCacheConfig(sptMathKernel,cudaFuncCachePreferShared));
     //compute support
 //    cudaDeviceSynchronize();    //
     sptMathKernel << <grid, threads, 0 >> > (D_can_width, D_can_height, D_sup_g, I_desc1, I_desc2);
-    cudaDeviceSynchronize();    //13ms
+    //cudaDeviceSynchronize();    //13ms
+    gpuErrchk(cudaDeviceSynchronize());
 
     //put D_sup to vector of support
     vector<Elas::support_pt> p_support;
@@ -973,21 +988,23 @@ void cuda_computeD(int32_t* disparity_grid_1, int32_t* disparity_grid_2,  vector
     err = cudaGetLastError();
     if(0 != err) printf("Triangle_Match1 cuda error: %s\n", cudaGetErrorString(err));
 
- //   cudaDeviceSynchronize();
-    err = cudaGetLastError();
-    if(0 != err) printf("Triangle_Match1 cuda error: %s\n", cudaGetErrorString(err));
+    gpuErrchk(cudaDeviceSynchronize());
+
+    //if(0 != err) printf("Triangle_Match1 cuda error: %s\n", cudaGetErrorString(err));
 
 
 
     leftRightConsistencyCheck<<<grid, threads, 0>>>(D1, D2);
 //    cudaDeviceSynchronize();
 
-    ConvertD2Z( D1,  cloud_g);
+    dim3 threads2(320, 1);
+    dim3 grid2(1, 200);
+    Convert<<<grid2, threads2>>>(D1, cloud_g);
     cudaFree((void*)tri_gpu_1);
     cudaFree((void*)tri_gpu_2);
 //    cudaFree((void*)P_gpu);
-    //  cudaDeviceSynchronize();
-
+    err =cudaDeviceSynchronize();
+    gpuErrchk(err);
 
 
 }
